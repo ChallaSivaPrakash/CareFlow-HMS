@@ -90,13 +90,13 @@ export class WebSocketService {
   }
 
   triggerEmergencyOverride(payload: any) {
-  if (this.client.connected) {
-    this.client.publish({
-      destination: '/topic/alerts', 
-      body: JSON.stringify(payload)
-    });
-  } else {
-    console.error('Cannot trigger emergency: STOMP disconnected');
+    if (this.client.connected) {
+      this.client.publish({
+        destination: '/app/emergency.trigger', 
+        body: JSON.stringify(payload)
+      });
+    } else {
+      console.error('Cannot trigger emergency: STOMP disconnected');
+    }
   }
-}
 }

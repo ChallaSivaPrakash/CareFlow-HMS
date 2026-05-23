@@ -1,7 +1,7 @@
 <div class="dashboard-container">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h2 class="dashboard-title">Patient Directory</h2>
+      <h2 class="dashboard-title">Out Patient Department</h2>
       <p class="text-muted">Manage hospital admissions and records</p>
     </div>
     
@@ -16,7 +16,47 @@
         Sign Out
       </button>
     </div>
+</div>
+
+<!-- Bed Allocation Modal -->
+<div class="modal-backdrop fade show" *ngIf="showBedModal"></div>
+<div class="modal fade show d-block" *ngIf="showBedModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-primary text-white border-0">
+        <h5 class="modal-title fw-bold">Bed Allocation</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeBedModal()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="alert alert-info border-0 shadow-sm mb-4">
+          <i class="bi bi-info-circle-fill me-2"></i>
+          System Suggestion based on Triage ({{ patient.triageColor }}):
+          <strong class="d-block mt-2" *ngIf="suggestedBed">
+            Bed #{{ suggestedBed.bedNumber }} ({{ suggestedBed.bedType }} - {{ suggestedBed.wardName }})
+          </strong>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="manualBedSelection" id="manualMode">
+          <label class="form-check-label text-muted small" for="manualMode">Manual Override</label>
+        </div>
+
+        <div *ngIf="manualBedSelection" class="mb-3">
+          <label class="form-label small fw-bold text-muted">Select Available Bed</label>
+          <select class="form-select" [(ngModel)]="suggestedBed">
+            <option *ngFor="let b of availableBeds" [ngValue]="b">
+              {{ b.bedNumber }} ({{ b.bedType }} - {{ b.wardName }})
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer border-0 p-3">
+        <button type="button" class="btn btn-light px-4" (click)="closeBedModal()">Skip</button>
+        <button type="button" class="btn btn-primary px-4" (click)="confirmBedAllocation()">Confirm Assignment</button>
+      </div>
+    </div>
   </div>
+</div>
 
   <div class="row mb-4">
     <div class="col-md-3">
@@ -81,6 +121,13 @@
   <input type="number" step="0.1" class="form-control custom-input" placeholder="Weight" [(ngModel)]="patient.weight">
 </div>
 <div class="col-md-3">
+  <label class="form-label text-muted small fw-bold">Visit Type</label>
+  <select class="form-select custom-input" [(ngModel)]="patient.visitType">
+    <option value="CONSULTATION">Consultation</option>
+    <option value="ADMITTED">Admission</option>
+  </select>
+</div>
+<div class="col-md-3">
   <label class="form-label text-muted small fw-bold">Triage Color</label>
   <select class="form-select custom-input" [(ngModel)]="patient.triageColor">
     <option value="GREEN">GREEN</option>
@@ -111,7 +158,7 @@
                  *ngIf="doctorSearchTerm && filteredDoctors.length > 0"
                  style="max-height: 200px; overflow-y: auto; display: block;">
               <button class="dropdown-item py-2 border-bottom" 
-                      *ngFor="let dr of filteredDoctors" 
+                      *ngFor="let dr of filteredDoctors"
                       (click)="selectDoctor(dr)">
                 <div class="fw-bold">{{ dr.name }}</div>
                 <small class="text-primary">{{ dr.specialty }} — {{ dr.department }}</small>
@@ -143,13 +190,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngIf="patients.length === 0">
+            <tr *ngIf="activePatients.length === 0">
               <td colspan="6" class="text-center py-5 text-muted">
                 <i class="bi bi-folder2-open display-4 d-block mb-2"></i>
-                No patient records found.
+                No active patient records found.
               </td>
             </tr>
-            <tr *ngFor="let p of patients">
+            <tr *ngFor="let p of activePatients">
               <td class="ps-4 fw-bold text-muted">#PT-{{ p.id }}</td>
               <td>
                 <div class="d-flex align-items-center gap-3">
@@ -158,19 +205,23 @@
                   </div>
                   <div>
                     <h6 class="mb-0 fw-bold">{{ p.name }}</h6>
-                    <small class="text-muted">{{ p.age }} yrs old</small>
+                    <small class="text-muted">{{ p.age }} yrs old — {{ p.status }}</small>
                   </div>
                 </div>
               </td>
-              <td><span class="badge bg-secondary-light text-dark">{{ p.disease }}</span></td>
-              <td><i class="bi bi-stethoscope text-primary me-2"></i>{{ p.doctor }}</td>
+              <td><span class="badge" [ngClass]="{
+                'bg-danger': p.triageColor === 'RED',
+                'bg-warning text-dark': p.triageColor === 'YELLOW',
+                'bg-success': p.triageColor === 'GREEN'
+              }">{{ p.triageColor }}</span> — {{ p.chiefComplaint }}</td>
+              <td><i class="bi bi-stethoscope text-primary me-2"></i>{{ p.assignedDoctor?.name || 'Unassigned' }}</td>
               <td>{{ p.mobile }}</td>
               <td class="text-end pe-4">
                 <button class="btn btn-sm btn-icon btn-light me-2" (click)="editPatient(p)" title="Edit">
                   <i class="bi bi-pencil-square text-primary"></i>
                 </button>
-                <button class="btn btn-sm btn-icon btn-light" (click)="deletePatient(p.id)" title="Delete">
-                  <i class="bi bi-trash text-danger"></i>
+                <button class="btn btn-sm btn-icon btn-light" (click)="dischargePatient(p)" title="Discharge">
+                  <i class="bi bi-box-arrow-right text-success"></i>
                 </button>
               </td>
             </tr>
@@ -179,10 +230,46 @@
       </div>
     </div>
   </div>
-</div>
 
-<!-- Floating Emergency Toggle Button -->
-<div class="emergency-fab" (click)="toggleEmergency()" [class.active]="isEmergencyActive">
-  <span class="emergency-icon">🚨</span>
-  <span class="emergency-tooltip">{{ isEmergencyActive ? 'Deactivate Emergency' : 'Trigger Trauma Alert' }}</span>
+  <div class="card table-card shadow-sm mt-4" *ngIf="dischargedPatients.length > 0">
+    <div class="card-header bg-white border-0 py-3">
+      <h5 class="mb-0 fw-bold text-muted">Discharged Patients</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th class="ps-4">Patient ID</th>
+              <th>Patient Info</th>
+              <th>Diagnosis</th>
+              <th>Physician</th>
+              <th class="text-end pe-4">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of dischargedPatients">
+              <td class="ps-4 fw-bold text-muted">#PT-{{ p.id }}</td>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="avatar bg-secondary-light text-muted fw-bold">
+                    {{ p.name.charAt(0) | uppercase }}
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-bold">{{ p.name }}</h6>
+                    <small class="text-muted">{{ p.age }} yrs old</small>
+                  </div>
+                </div>
+              </td>
+              <td>{{ p.chiefComplaint }}</td>
+              <td>{{ p.assignedDoctor?.name }}</td>
+              <td class="text-end pe-4">
+                <span class="badge bg-light text-muted border">DISCHARGED</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

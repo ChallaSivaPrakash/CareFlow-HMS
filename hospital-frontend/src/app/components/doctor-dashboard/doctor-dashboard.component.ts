@@ -85,8 +85,13 @@ export class DoctorDashboardComponent implements OnInit {
   }
 
   viewDetails(patient: any): void {
-    console.log('Viewing details for patient:', patient);
-    alert(`Viewing details for ${patient.name} (${patient.patientId})`);
+    this.patientService.getPatientById(patient.id).subscribe({
+      next: (fullPatient: any) => {
+        console.log('Viewing details for patient:', fullPatient);
+        alert(`Details for ${fullPatient.name}:\nID: ${fullPatient.patientId}\nDoctor: ${fullPatient.assignedDoctor?.name || 'N/A'}\nComplaint: ${fullPatient.chiefComplaint}\nStatus: ${fullPatient.status}`);
+      },
+      error: (err) => console.error('Error fetching patient details', err)
+    });
   }
 
   logout(): void {
@@ -115,8 +120,13 @@ export class DoctorDashboardComponent implements OnInit {
 
   // Modal Methods
   openEditModal(patient: any): void {
-    this.editingPatient = { ...patient };
-    this.showEditModal = true;
+    this.patientService.getPatientById(patient.id).subscribe({
+      next: (fullPatient) => {
+        this.editingPatient = { ...fullPatient };
+        this.showEditModal = true;
+      },
+      error: (err) => console.error('Error fetching patient details', err)
+    });
   }
 
   closeEditModal(): void {
