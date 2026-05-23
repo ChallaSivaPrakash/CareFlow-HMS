@@ -1,0 +1,171 @@
+:host {
+  display: block;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.admin-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.rounded-4 {
+  border-radius: 1rem !important;
+}
+
+.card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.form-label {
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.025em;
+}
+
+.form-control, .form-select {
+  border: 1px solid #e0e4e8;
+  padding: 0.75rem 1rem;
+  background-color: #fdfdfd;
+  transition: all 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+  background-color: #fff;
+}
+
+.btn-primary {
+  padding: 0.875rem;
+  box-shadow: 0 4px 6px -1px rgba(13, 110, 253, 0.2);
+  transition: all 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(13, 110, 253, 0.3);
+}
+
+.table thead th {
+  background-color: #f8fafc;
+  padding: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.table tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.rounded-circle {
+  object-fit: cover;
+}
+
+.bg-success-subtle {
+  background-color: #dcfce7 !important;
+}
+
+.text-success {
+  color: #166534 !important;
+}
+
+.badge.border {
+  border-color: #e2e8f0 !important;
+}
+
+/* Custom Scrollbar for Table */
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Upload Zone Styles */
+.upload-zone {
+  border: 2px dashed #e0e4e8;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.upload-zone:hover {
+  border-color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.02) !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.border-dashed {
+  border-style: dashed !important;
+}
+
+.search-bar {
+  background: white;
+  border-radius: 50px;
+}
+
+.search-bar input:focus {
+  box-shadow: none;
+}
+
+.rounded-3-start {
+  border-top-left-radius: 0.5rem !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
+
+.rounded-3-end {
+  border-top-right-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+}
+
+.staff-directory-card {
+  min-height: 600px;
+}
+
+.bg-primary-subtle { background-color: #e7f1ff !important; }
+.bg-info-subtle { background-color: #cff4fc !important; }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(5px);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-card {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

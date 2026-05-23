@@ -1,0 +1,53 @@
+<div class="login-fullscreen-bg p-4 p-md-5">
+  
+  <div class="card login-popup-card shadow-lg">
+    <div class="card-body p-5">
+      
+      <div class="text-center mb-4">
+        <div class="hospital-logo mb-3 shadow-sm">
+          <i class="bi bi-hospital text-primary display-5"></i>
+        </div>
+        <h3 class="fw-bold text-dark">Staff Portal</h3>
+        <p class="text-muted small">Sign in to access the Patient Directory</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger py-2 small fade-in" role="alert">
+        <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-muted small fw-bold">Username</label>
+        <div class="input-group input-group-custom">
+          <span class="input-group-text border-end-0"><i class="bi bi-person text-muted"></i></span>
+          <input type="text" class="form-control border-start-0 custom-input" placeholder="Enter username" [(ngModel)]="credentials.username">
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label text-muted small fw-bold">Password</label>
+        <div class="input-group input-group-custom">
+          <span class="input-group-text border-end-0"><i class="bi bi-shield-lock text-muted"></i></span>
+          
+          <input [type]="isPasswordVisible ? 'text' : 'password'" class="form-control border-start-0 border-end-0 custom-input" placeholder="Enter password" [(ngModel)]="credentials.password">
+          
+          <button class="btn border border-start-0 text-muted toggle-btn" type="button" (click)="togglePassword()">
+            <i class="bi" [ngClass]="isPasswordVisible ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-100 py-3 fw-bold mb-3 shadow-sm login-action-btn" (click)="onLogin()">
+       Login
+      </button>
+
+      <div class="text-center mb-3">
+        <a routerLink="/forgot-password" class="text-decoration-none small fw-bold">Forgot Password?</a>
+      </div>
+      
+      <div class="text-center">
+        <small class="text-muted"><i class="bi bi-shield-check me-1 text-success"></i> HIPAA Compliant Connection</small>
+      </div>
+
+    </div>
+  </div>
+</div>

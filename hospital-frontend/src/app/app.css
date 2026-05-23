@@ -1,0 +1,44 @@
+.emergency-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background-color: #ff0000;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 900;
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+  animation: pulse-red 1s infinite;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+@keyframes pulse-red {
+  0% {
+    background-color: #ff0000;
+    transform: scale(1);
+  }
+  50% {
+    background-color: #990000;
+    transform: scale(1.01);
+  }
+  100% {
+    background-color: #ff0000;
+    transform: scale(1);
+  }
+}
+
+/* Ensure content below doesn't get hidden if not fixed */
+body {
+  margin: 0;
+  padding: 0;
+}

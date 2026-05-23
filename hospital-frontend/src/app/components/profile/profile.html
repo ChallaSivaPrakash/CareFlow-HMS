@@ -1,0 +1,112 @@
+<div class="profile-container min-vh-100 bg-light py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <!-- Back Button -->
+        <button (click)="goBack()" class="btn btn-link text-primary p-0 mb-4 text-decoration-none">
+          <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </button>
+        <input type="file" id="fileInput" (change)="handleFileInput($event)" accept="image/*" style="display:none">
+        <div class="row g-4">
+          <!-- LEFT: Profile Edit -->
+          <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+              <div class="card-header bg-primary text-white p-4 border-0 d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 fw-bold">Edit Profile</h4>
+                <span class="badge bg-white text-primary rounded-pill px-3">{{ userProfile.role }}</span>
+              </div>
+              <div class="card-body p-4">
+                <div *ngIf="isLoading" class="text-center py-5">
+                  <div class="spinner-border text-primary" role="status"></div>
+                </div>
+
+                <div *ngIf="!isLoading">
+                  <div *ngIf="successMessage" class="alert alert-success rounded-3 mb-4">{{ successMessage }}</div>
+                  <div *ngIf="errorMessage" class="alert alert-danger rounded-3 mb-4">{{ errorMessage }}</div>
+
+                  <form (ngSubmit)="onSaveProfile()" #profileForm="ngForm">
+                    <div class="row g-3">
+                      <div class="col-md-12 text-center mb-4">
+                        <div class="position-relative d-inline-block">
+                          <img [src]="userProfile.profileImageUrl || 'https://ui-avatars.com/api/?name=' + userProfile.name" 
+                               class="rounded-circle border shadow-sm" width="120" height="120" style="object-fit: cover;">
+                          <div class="position-absolute bottom-0 end-0">
+                            <button type="button" class="btn btn-primary btn-sm rounded-circle shadow"><i class="bi bi-camera"></i></button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <label class="form-label small fw-bold text-muted">Full Name</label>
+                        <input type="text" class="form-control rounded-3" name="name" [(ngModel)]="userProfile.name" required>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label small fw-bold text-muted">Email Address</label>
+                        <input type="email" class="form-control rounded-3" name="email" [(ngModel)]="userProfile.email">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label small fw-bold text-muted">Contact Number</label>
+                        <input type="tel" class="form-control rounded-3" name="phone" [(ngModel)]="userProfile.contactNumber">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label small fw-bold text-muted">Address</label>
+                        <input type="text" class="form-control rounded-3" name="address" [(ngModel)]="userProfile.address">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label small fw-bold text-muted">Professional Bio</label>
+                        <textarea class="form-control rounded-3" name="bio" [(ngModel)]="userProfile.bio" rows="3"></textarea>
+                      </div>
+                    </div>
+                    
+                    <hr class="my-4 opacity-10">
+                    
+                    <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold" [disabled]="!profileForm.valid || isSaving">
+                      <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span> Save Changes
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Security & Privacy -->
+          <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+              <div class="card-header bg-dark text-white p-4 border-0">
+                <h5 class="fw-bold mb-0"><i class="bi bi-shield-lock me-2"></i>Security Settings</h5>
+              </div>
+              <div class="card-body p-4">
+                <form (ngSubmit)="onChangePassword()" #passForm="ngForm">
+                  <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Current Password</label>
+                    <input type="password" class="form-control rounded-3" name="curr" [(ngModel)]="passwordForm.currentPassword" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">New Password</label>
+                    <input type="password" class="form-control rounded-3" name="new" [(ngModel)]="passwordForm.newPassword" required>
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">Verification OTP</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control rounded-3-start" name="otp" [(ngModel)]="passwordForm.otp" placeholder="Enter OTP sent to email">
+                      <button type="button" class="btn btn-outline-secondary rounded-3-end small" style="font-size: 0.8rem;">Send OTP</button>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold" [disabled]="!passForm.valid">Update Credentials</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 bg-primary-subtle border-primary-soft">
+              <div class="card-body p-4 text-center">
+                <i class="bi bi-info-circle text-primary h3 mb-3 d-block"></i>
+                <h6 class="fw-bold text-primary">Need Help?</h6>
+                <p class="small text-muted mb-0">Contact the hospital IT department at <br><strong>support@careflow.com</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

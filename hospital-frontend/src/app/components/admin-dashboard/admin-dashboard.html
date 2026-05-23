@@ -1,0 +1,333 @@
+<div class="admin-container p-4 min-vh-100 bg-light">
+  <!-- Header Section with Patient Search -->
+  <header class="mb-4 bg-white p-4 rounded-4 shadow-sm border-0 animate-fade-in">
+    <div class="row align-items-center">
+      <div class="col-md-4">
+        <h1 class="h3 fw-bold text-dark mb-0">Hospital Administration</h1>
+        <p class="text-muted mb-0">Staff management & patient lookup</p>
+      </div>
+      <div class="col-md-5">
+        <div class="input-group search-bar shadow-sm rounded-pill overflow-hidden border">
+          <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" class="form-control border-0 py-2" placeholder="Search Patient Name..." [(ngModel)]="searchName">
+          <input type="text" class="form-control border-0 py-2 border-start" placeholder="ID (Optional)" [(ngModel)]="searchPatientId" style="max-width: 120px;">
+          <button class="btn btn-primary px-4 fw-bold" (click)="onSearchPatients()">Lookup</button>
+        </div>
+      </div>
+      <div class="col-md-3 text-end d-flex align-items-center justify-content-end gap-2">
+        <button routerLink="/profile" class="btn btn-outline-primary rounded-pill px-3 fw-bold btn-sm">
+          <i class="bi bi-person-circle me-1"></i> My Profile
+        </button>
+        <button (click)="logout()" class="btn btn-outline-danger rounded-pill px-3 fw-bold btn-sm">
+          <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Search Results Bar (if any) -->
+  <div *ngIf="searchResults.length > 0" class="alert alert-info rounded-4 border-0 shadow-sm mb-4 d-flex justify-content-between align-items-center animate-fade-in">
+    <div>
+      <i class="bi bi-info-circle-fill me-2"></i> Found <strong>{{ searchResults.length }}</strong> patients matching your search.
+    </div>
+    <div class="d-flex gap-2">
+      <button *ngFor="let p of searchResults | slice:0:3" (click)="viewPatientHistory(p)" class="btn btn-sm btn-primary rounded-pill px-3">{{ p.name }} (#{{ p.patientId }})</button>
+      <button (click)="searchResults = []" class="btn btn-sm btn-link text-dark text-decoration-none">Clear</button>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- LEFT COLUMN: Staff Registration -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 2rem;">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="card-title fw-bold mb-0">Register New Staff</h5>
+            <div class="btn-group btn-group-sm">
+              <button class="btn" [class.btn-primary]="activeTab === 'doctors'" [class.btn-light]="activeTab !== 'doctors'" (click)="activeTab = 'doctors'">Doctor</button>
+              <button class="btn" [class.btn-primary]="activeTab === 'clerks'" [class.btn-light]="activeTab !== 'clerks'" (click)="activeTab = 'clerks'">Clerk</button>
+            </div>
+          </div>
+          
+          <div *ngIf="successMessage" class="alert alert-success rounded-3 mb-4">{{ successMessage }}</div>
+          <div *ngIf="errorMessage" class="alert alert-danger rounded-3 mb-4">{{ errorMessage }}</div>
+
+          <!-- Doctor Form -->
+          <form *ngIf="activeTab === 'doctors'" (ngSubmit)="onSubmitDoctor()" #doctorForm="ngForm">
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted">Full Name</label>
+              <input type="text" class="form-control rounded-3" name="name" [(ngModel)]="newDoctor.name" required>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-muted">Specialty</label>
+                <input type="text" class="form-control rounded-3" name="spec" [(ngModel)]="newDoctor.specialty" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-muted">Department</label>
+                <select class="form-select rounded-3" name="dept" [(ngModel)]="newDoctor.department" required>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Neurology">Neurology</option>
+                  <option value="Emergency">Emergency</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted">Contact / Email</label>
+              <div class="input-group">
+                <input type="tel" class="form-control rounded-3-start" name="phone" [(ngModel)]="newDoctor.contactNumber" placeholder="Phone" required>
+                <input type="email" class="form-control rounded-3-end" name="email" [(ngModel)]="newDoctor.email" placeholder="Email">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted">Bio / Address</label>
+              <textarea class="form-control rounded-3 mb-2" name="bio" [(ngModel)]="newDoctor.bio" placeholder="Professional Bio" rows="2"></textarea>
+              <input type="text" class="form-control rounded-3" name="addr" [(ngModel)]="newDoctor.address" placeholder="Residential Address">
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-muted">Profile Image</label>
+              <div class="upload-zone border-dashed rounded-3 p-3 text-center bg-light position-relative">
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="position-absolute w-100 h-100 top-0 start-0 opacity-0 cursor-pointer">
+                <div *ngIf="!newDoctor.profileImageUrl">
+                  <i class="bi bi-cloud-arrow-up text-primary h4"></i>
+                  <p class="small text-muted mb-0">Upload Image</p>
+                </div>
+                <div *ngIf="newDoctor.profileImageUrl" class="animate-fade-in">
+                  <img [src]="newDoctor.profileImageUrl" class="rounded-circle border" width="40" height="40" style="object-fit: cover;">
+                  <span class="small text-success ms-2">{{ fileName }}</span>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold py-2" [disabled]="!doctorForm.valid || isSubmitting">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span> Register Doctor
+            </button>
+          </form>
+
+          <!-- Clerk Form -->
+          <form *ngIf="activeTab === 'clerks'" (ngSubmit)="onSubmitClerk()" #clerkForm="ngForm">
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted">Full Name</label>
+              <input type="text" class="form-control rounded-3" name="cname" [(ngModel)]="newClerk.name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted">Email Address</label>
+              <input type="email" class="form-control rounded-3" name="cemail" [(ngModel)]="newClerk.email" required>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-muted">Contact Number</label>
+                <input type="tel" class="form-control rounded-3" name="cphone" [(ngModel)]="newClerk.contactNumber" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-muted">Department</label>
+                <select class="form-select rounded-3" name="cdept" [(ngModel)]="newClerk.department" required>
+                  <option value="OPD Front Desk">OPD Front Desk</option>
+                  <option value="Records Office">Records Office</option>
+                  <option value="Emergency Desk">Emergency Desk</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-muted">Profile Image</label>
+              <div class="upload-zone border-dashed rounded-3 p-3 text-center bg-light position-relative">
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="position-absolute w-100 h-100 top-0 start-0 opacity-0 cursor-pointer">
+                <div *ngIf="!newClerk.profileImageUrl">
+                  <i class="bi bi-cloud-arrow-up text-primary h4"></i>
+                  <p class="small text-muted mb-0">Upload Image</p>
+                </div>
+                <div *ngIf="newClerk.profileImageUrl" class="animate-fade-in">
+                  <img [src]="newClerk.profileImageUrl" class="rounded-circle border" width="40" height="40" style="object-fit: cover;">
+                  <span class="small text-success ms-2">{{ fileName }}</span>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold py-2" [disabled]="!clerkForm.valid || isSubmitting">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span> Register Clerk
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Staff Directory -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0">Staff Directory</h5>
+            <button (click)="loadStaff()" class="btn btn-light btn-sm rounded-pill px-3"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+          </div>
+
+          <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+          </div>
+
+          <div class="table-responsive" *ngIf="!isLoading">
+            <table class="table table-hover align-middle">
+              <thead class="bg-light">
+                <tr>
+                  <th class="border-0 small fw-bold text-muted ps-3">NAME & ROLE</th>
+                  <th class="border-0 small fw-bold text-muted">DEPT / SPEC</th>
+                  <th class="border-0 small fw-bold text-muted">CONTACT</th>
+                  <th class="border-0 small fw-bold text-muted text-end pe-3">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Doctors List -->
+                <tr *ngFor="let dr of doctors" class="animate-fade-in">
+                  <td class="ps-3">
+                    <div class="d-flex align-items-center">
+                      <img [src]="dr.profileImageUrl || 'https://ui-avatars.com/api/?name=' + dr.name" class="rounded-circle me-3 border shadow-sm" width="45" height="45" style="object-fit: cover;">
+                      <div>
+                        <div class="fw-bold text-dark">{{ dr.name }}</div>
+                        <span class="badge bg-primary-subtle text-primary small">DOCTOR</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="small fw-bold">{{ dr.department }}</div>
+                    <div class="small text-muted">{{ dr.specialty }}</div>
+                  </td>
+                  <td><div class="small">{{ dr.contactNumber }}</div><div class="small text-muted">{{ dr.email }}</div></td>
+                  <td class="text-end pe-3">
+                    <button (click)="viewDoctorOverview(dr)" class="btn btn-sm btn-outline-info rounded-circle me-2 p-1" title="View Overview"><i class="bi bi-graph-up" style="padding: 4px;"></i></button>
+                    <button (click)="openEditModal(dr, 'doctor')" class="btn btn-sm btn-outline-primary rounded-circle me-2 p-1" title="Edit"><i class="bi bi-pencil" style="padding: 4px;"></i></button>
+                    <button (click)="deactivateDoctor(dr.id)" class="btn btn-sm btn-outline-danger rounded-circle p-1" title="Deactivate"><i class="bi bi-trash" style="padding: 4px;"></i></button>
+                  </td>
+                </tr>
+                <!-- Clerks List -->
+                <tr *ngFor="let cl of clerks" class="animate-fade-in">
+                  <td class="ps-3">
+                    <div class="d-flex align-items-center">
+                      <img [src]="cl.profileImageUrl || 'https://ui-avatars.com/api/?name=' + cl.name" class="rounded-circle me-3 border shadow-sm" width="45" height="45" style="object-fit: cover;">
+                      <div>
+                        <div class="fw-bold text-dark">{{ cl.name }}</div>
+                        <span class="badge bg-info-subtle text-info small">CLERK</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><div class="small fw-bold">{{ cl.department }}</div></td>
+                  <td><div class="small">{{ cl.contactNumber }}</div><div class="small text-muted">{{ cl.email }}</div></td>
+                  <td class="text-end pe-3">
+                    <button (click)="openEditModal(cl, 'clerk')" class="btn btn-sm btn-outline-primary rounded-circle me-2 p-1" title="Edit"><i class="bi bi-pencil" style="padding: 4px;"></i></button>
+                    <button (click)="deactivateClerk(cl.id)" class="btn btn-sm btn-outline-danger rounded-circle p-1" title="Deactivate"><i class="bi bi-trash" style="padding: 4px;"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOCTOR OVERVIEW MODAL -->
+<div *ngIf="showOverviewModal" class="modal-overlay d-flex align-items-center justify-content-center">
+  <div class="modal-card bg-white rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 600px;">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <h5 class="fw-bold mb-0">Doctor Overview: {{ overviewDoctor?.name }}</h5>
+      <button (click)="showOverviewModal = false" class="btn-close"></button>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4 text-center">
+        <img [src]="overviewDoctor?.profileImageUrl || 'https://ui-avatars.com/api/?name=' + overviewDoctor?.name" class="rounded-circle border shadow mb-3" width="120" height="120" style="object-fit: cover;">
+        <h6 class="fw-bold mb-1">{{ overviewDoctor?.specialty }}</h6>
+        <p class="small text-muted">{{ overviewDoctor?.department }}</p>
+      </div>
+      <div class="col-md-8">
+        <label class="small fw-bold text-muted text-uppercase d-block mb-1">Professional Bio</label>
+        <p class="small mb-4 text-dark bg-light p-3 rounded-3">{{ overviewDoctor?.bio || 'No bio available.' }}</p>
+        
+        <label class="small fw-bold text-muted text-uppercase d-block mb-1">Performance Summary</label>
+        <div class="p-3 border rounded-3">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="small">Assigned Patients</span>
+            <span class="fw-bold">12</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="small">Successful Discharges</span>
+            <span class="fw-bold text-success">45</span>
+          </div>
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar bg-success" style="width: 85%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PATIENT HISTORY MODAL -->
+<div *ngIf="showPatientHistoryModal" class="modal-overlay d-flex align-items-center justify-content-center">
+  <div class="modal-card bg-white rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 700px;">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <div>
+        <h5 class="fw-bold mb-0">Patient Lookup: {{ selectedPatient?.name }}</h5>
+        <span class="small text-muted">ID: #{{ selectedPatient?.patientId }}</span>
+      </div>
+      <button (click)="showPatientHistoryModal = false" class="btn-close"></button>
+    </div>
+    <div class="row g-4" *ngIf="selectedPatient">
+      <div class="col-md-6">
+        <label class="small fw-bold text-muted text-uppercase">Vitals & Demographics</label>
+        <ul class="list-group list-group-flush small mt-2">
+          <li class="list-group-item d-flex justify-content-between px-0"><span>Age / Gender</span> <strong>{{ selectedPatient.age }} yrs / {{ selectedPatient.gender }}</strong></li>
+          <li class="list-group-item d-flex justify-content-between px-0"><span>Blood Pressure</span> <strong>{{ selectedPatient.bloodPressure }}</strong></li>
+          <li class="list-group-item d-flex justify-content-between px-0"><span>Heart Rate</span> <strong>{{ selectedPatient.heartRate }} bpm</strong></li>
+          <li class="list-group-item d-flex justify-content-between px-0"><span>SpO2</span> <strong>{{ selectedPatient.spO2 }}%</strong></li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <label class="small fw-bold text-muted text-uppercase">Current Status</label>
+        <div class="p-3 bg-light rounded-3 mt-2">
+          <div class="mb-2">
+            <span class="small d-block text-muted">Triage Priority</span>
+            <span class="badge rounded-pill px-3 py-1 mt-1" [class.bg-danger]="selectedPatient.triageColor === 'RED'" [class.bg-warning]="selectedPatient.triageColor === 'YELLOW'" [class.bg-success]="selectedPatient.triageColor === 'GREEN'">{{ selectedPatient.triageColor }}</span>
+          </div>
+          <div>
+            <span class="small d-block text-muted">Current Location</span>
+            <span class="fw-bold">{{ selectedPatient.assignedDepartment }} - Ward B</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <label class="small fw-bold text-muted text-uppercase">Chief Complaint</label>
+        <p class="p-3 border rounded-3 italic-text mt-2 mb-0">"{{ selectedPatient.chiefComplaint }}"</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT STAFF MODAL -->
+<div *ngIf="showEditModal" class="modal-overlay d-flex align-items-center justify-content-center">
+  <div class="modal-card bg-white rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 500px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0">Edit {{ staffType | titlecase }} Details</h5>
+      <button (click)="closeEditModal()" class="btn-close"></button>
+    </div>
+    <form (ngSubmit)="onUpdateStaff()" #editForm="ngForm" *ngIf="editingStaff">
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-muted">Full Name</label>
+        <input type="text" class="form-control rounded-3" name="editName" [(ngModel)]="editingStaff.name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-muted">Email</label>
+        <input type="email" class="form-control rounded-3" name="editEmail" [(ngModel)]="editingStaff.email">
+      </div>
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-muted">Contact Number</label>
+        <input type="tel" class="form-control rounded-3" name="editContact" [(ngModel)]="editingStaff.contactNumber" required>
+      </div>
+      <div class="mb-4">
+        <label class="form-label small fw-bold text-muted">Profile Image URL</label>
+        <input type="text" class="form-control rounded-3" name="editImg" [(ngModel)]="editingStaff.profileImageUrl">
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" (click)="closeEditModal()" class="btn btn-light rounded-3 fw-bold flex-grow-1">Cancel</button>
+        <button type="submit" class="btn btn-primary rounded-3 fw-bold flex-grow-1" [disabled]="!editForm.form.valid || isSubmitting">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>

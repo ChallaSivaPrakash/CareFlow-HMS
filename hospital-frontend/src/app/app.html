@@ -1,0 +1,11 @@
+<div *ngIf="isRedAlertActive" class="emergency-banner">
+  <div class="banner-content">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ alertMessage }}
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+
+<!-- Global Chat Component (Visible only when logged in) -->
+<app-chat *ngIf="authService.getToken()"></app-chat>
