@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,36 +17,32 @@ import { WebSocketService } from '../../services/websocket.service';
 export class PatientComponent implements OnInit {
 
   patients: any[] = [];
+  activePatients: any[] = [];
+  dischargedPatients: any[] = [];
   doctors: any[] = [];
   filteredDoctors: any[] = [];
   doctorSearchTerm: string = '';
-  isEmergencyActive: boolean = false;
   
   patient: any = { 
-  name: '', 
-  age: null, 
-  gender: '',
-  chiefComplaint: '', 
-  assignedDoctorId: null, 
-  mobile: '',
-  bloodPressure: '',
-  heartRate: null,
-  spO2: null,
-  weight: null,            
-  triageColor: 'GREEN'    
-};
+    name: '', age: null, gender: '', chiefComplaint: '', 
+    assignedDoctorId: null, mobile: '', bloodPressure: '', 
+    heartRate: null, spO2: null, weight: null, triageColor: 'GREEN',
+    visitType: 'CONSULTATION'    
+  };
   
   selectedId: number = 0;
-  
-  // UI State Variable
   showForm: boolean = false;
+  showBedModal: boolean = false;
+  suggestedBed: any = null;
+  availableBeds: any[] = [];
+  manualBedSelection: boolean = false;
 
-constructor(
-  private service: PatientService, 
-  private doctorService: DoctorService, 
-  private webSocketService: WebSocketService,
-  private router: Router
-) {}
+  constructor(
+    private service: PatientService, 
+    private doctorService: DoctorService, 
+    private webSocketService: WebSocketService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.getPatients();
@@ -53,11 +50,9 @@ constructor(
   }
 
   getDoctors() {
-    this.doctorService.getAllDoctors().subscribe({
-      next: (data: any) => {
-        this.doctors = data;
-        this.filteredDoctors = data;
-      }
+    this.doctorService.getAllDoctors().subscribe(data => {
+      this.doctors = data;
+      this.filteredDoctors = data;
     });
   }
 
@@ -71,7 +66,7 @@ constructor(
   selectDoctor(dr: any) {
     this.patient.assignedDoctorId = dr.id;
     this.doctorSearchTerm = dr.name + ' (' + dr.department + ')';
-    this.filteredDoctors = []; // Close dropdown
+    this.filteredDoctors = []; 
   }
 
   toggleForm() {
@@ -80,96 +75,89 @@ constructor(
   }
 
   getPatients() {
-    this.service.getPatients().subscribe({
-      next: (data: any) => this.patients = data,
-      error: (err) => console.log(err)
+    this.service.getPatients().subscribe((data) => {
+      this.patients = data as any[];
+      this.activePatients = this.patients.filter(p => p.status !== 'DISCHARGED');
+      this.dischargedPatients = this.patients.filter(p => p.status === 'DISCHARGED');
     });
   }
 
   addPatient() {
-    // Frontend Validation Guard
+    console.log('Debugging addPatient payload:', this.patient);
     if (!this.patient.name || !this.patient.age || !this.patient.gender || !this.patient.chiefComplaint || !this.patient.assignedDoctorId) {
-      window.alert('Please fill all required fields');
+      window.alert('Please fill all required fields (Name, Age, Gender, Complaint, Doctor)');
       return;
     }
-
-    const payload = {
-      ...this.patient,
-      assignedDoctor: { id: this.patient.assignedDoctorId },
-      status: 'WAITING'
+    const payload = { 
+      ...this.patient, 
+      assignedDoctor: { id: this.patient.assignedDoctorId }, 
+      status: 'WAITING' 
     };
-
-    this.service.addPatient(payload).subscribe({
-      next: () => {
-        this.getPatients();
-        this.toggleForm(); // Hide form on success
-      }
-    });
-  }
-
-  editPatient(p: any) {
-    this.patient = { 
-      ...p, 
-      assignedDoctorId: p.assignedDoctor?.id || null,
-      chiefComplaint: p.chiefComplaint || p.disease // Mapping legacy if any
-    };
-    this.doctorSearchTerm = p.assignedDoctor ? p.assignedDoctor.name : '';
-    this.selectedId = p.id;
-    this.showForm = true; // Open form when editing
-  }
-
-  updatePatient() {
-    // Frontend Validation Guard
-    if (!this.patient.name || !this.patient.age || !this.patient.gender || !this.patient.chiefComplaint || !this.patient.assignedDoctorId) {
-      window.alert('Please fill all required fields');
-      return;
-    }
-
-    const payload = {
-      ...this.patient,
-      assignedDoctor: { id: this.patient.assignedDoctorId }
-    };
-
-    this.service.updatePatient(this.selectedId, payload).subscribe({
-      next: () => {
-        this.getPatients();
+    this.service.addPatient(payload).subscribe((res: any) => { 
+      if (this.patient.visitType === 'ADMITTED') {
+        this.service.suggestBed(res.triageColor).subscribe((bed: any) => {
+          this.suggestedBed = bed;
+          this.selectedId = res.id; // Store patient ID for allocation
+          this.showBedModal = true;
+          this.service.getAvailableBeds().subscribe((beds: any) => this.availableBeds = beds);
+        });
+      } else {
+        this.getPatients(); 
         this.toggleForm();
       }
     });
   }
 
-  deletePatient(id: number) {
-    if(confirm("Are you sure you want to remove this patient record?")) {
-      this.service.deletePatient(id).subscribe({
-        next: () => this.getPatients()
-      });
+  confirmBedAllocation() {
+    this.service.allocateBed(this.suggestedBed.id, this.selectedId.toString()).subscribe(() => {
+      this.closeBedModal();
+      this.getPatients();
+      this.toggleForm();
+    });
+  }
+
+  closeBedModal() {
+    this.showBedModal = false;
+    this.suggestedBed = null;
+    this.manualBedSelection = false;
+  }
+
+  editPatient(p: any) {
+    this.service.getPatientById(p.id).subscribe((fullPatient: any) => {
+      this.patient = { ...fullPatient, assignedDoctorId: fullPatient.assignedDoctor?.id };
+      this.selectedId = fullPatient.id;
+      this.doctorSearchTerm = fullPatient.assignedDoctor ? 
+        fullPatient.assignedDoctor.name + ' (' + fullPatient.assignedDoctor.department + ')' : '';
+      this.showForm = true;
+    });
+  }
+
+  updatePatient() {
+    const payload = { 
+      ...this.patient, 
+      assignedDoctor: { id: this.patient.assignedDoctorId } 
+    };
+    this.service.updatePatient(this.selectedId, payload).subscribe(() => { 
+      this.getPatients(); 
+      this.toggleForm(); 
+    });
+  }
+
+  // REPLACED deletePatient with dischargePatient
+  dischargePatient(p: any) {
+    if (confirm("Discharge " + p.name + "?")) {
+      const updatedPatient = { ...p, status: 'DISCHARGED' };
+      this.service.updatePatient(p.id, updatedPatient).subscribe(() => this.getPatients());
     }
   }
 
   logout() {
-    // Remove the token from the browser's memory
     localStorage.removeItem('jwt_token');
-    // Send them back to the login screen
     this.router.navigate(['/login']);
   }
 
-  toggleEmergency() {
-    this.isEmergencyActive = !this.isEmergencyActive;
-    this.webSocketService.triggerEmergencyOverride({ active: this.isEmergencyActive });
-  }
-
   clearForm() {
-    this.patient = { 
-      name: '', 
-      age: null, 
-      gender: '',
-      chiefComplaint: '', 
-      assignedDoctorId: null, 
-      mobile: '',
-      bloodPressure: '',
-      heartRate: null,
-      spO2: null
-    };
+    this.patient = { name: '', age: null, gender: '', chiefComplaint: '', assignedDoctorId: null, mobile: '', bloodPressure: '', heartRate: null, spO2: null };
     this.doctorSearchTerm = '';
     this.selectedId = 0;
   }

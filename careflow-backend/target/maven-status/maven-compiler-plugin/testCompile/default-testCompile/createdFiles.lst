@@ -1,0 +1,3 @@
+com/careflow/hms/repository/RepositoryIntegrationTest.class
+com/careflow/hms/test/ClinicalWorkflowIntegrationTest.class
+com/careflow/hms/controller/PatientControllerTest.class

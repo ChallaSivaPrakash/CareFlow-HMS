@@ -8,7 +8,8 @@ A modern, enterprise-grade Hospital Management System designed to handle multi-r
 * **Real-Time Staff Intercom:** A floating chat widget powered by STOMP WebSockets. Features dynamic topic routing to isolate conversations by medical department (e.g., Cardiology, Neurology).
 * **Global Emergency Override:** A zero-latency red-alert broadcast system that pushes emergency trauma notifications to all active staff dashboards simultaneously.
 * **Smart Patient Triage:** An OPD intake queue that categorizes patients by priority (RED, YELLOW, GREEN) and allows smart-filtering for doctor assignment.
-* **JWT-Based Authentication:** Stateless session management with hashed credentials for HIPAA-compliant architectural patterns.
+* **JWT-Based Authentication:** Stateless session management with hashed credentials for secure, scalable access.
+
 
 ## 💻 Tech Stack
 
@@ -39,3 +40,4 @@ A modern, enterprise-grade Hospital Management System designed to handle multi-r
 2. Run `npm install` to download dependencies.
 3. Start the development server with `ng serve`.
 4. Access the Staff Portal at `http://localhost:4200/login`.
+

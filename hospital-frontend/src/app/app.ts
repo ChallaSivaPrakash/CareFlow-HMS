@@ -15,6 +15,7 @@ import { ChatComponent } from './components/chat/chat.component'; // <-- ADDED
 export class App implements OnInit {
   protected readonly title = signal('hospital-frontend');
   isRedAlertActive = false;
+  isEmergencyActive = false;
   alertMessage = 'EMERGENCY: RED ALERT TRIGGERED IN WARD';
 
   constructor(
@@ -31,8 +32,14 @@ export class App implements OnInit {
   triggerRedAlert(alert: any) {
     // Activate banner
     this.isRedAlertActive = alert.active;
+    this.isEmergencyActive = alert.active;
     
     // Set custom message
     this.alertMessage = "EMERGENCY: INCOMING TRAUMA CASES. PLEASE BE ALERT.";
+  }
+
+  toggleEmergency() {
+    this.isEmergencyActive = !this.isEmergencyActive;
+    this.webSocketService.triggerEmergencyOverride({ active: this.isEmergencyActive });
   }
 }
