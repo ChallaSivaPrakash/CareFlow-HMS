@@ -1,24 +1,41 @@
-# CareFlow HMS - Enterprise Hospital Management System
+# 🏥 CareFlow HMS (Hospital Management System)
 
-**CareFlow HMS** is an event-driven, secure, and clinically-validated hospital management platform designed for OPD triage, bed allocation, and real-time medical staff communication.
+A modern, enterprise-grade Hospital Management System designed to handle multi-role staff authentication, patient triage, and real-time intra-hospital communication. 
 
-## 🚀 Key Clinical & Technical Features
-* **Automated Triage Engine:** Uses heuristic rules to prioritize patients (RED/YELLOW/GREEN) and auto-assign departments.
-* **Smart Bed Allocation:** Automated suggest-and-assign system for `ADMITTED` patients, with manual override capabilities.
-* **Real-time Collaboration:** WebSocket-based "Trauma Alert" system that broadcasts emergencies globally to all connected staff.
-* **Security First:** JWT-based authentication with role-based access (RBAC) and OTP-secured password recovery via SMTP.
-* **Audit Trail:** Every critical medical action (Discharge, Claiming a patient, Assignment) is recorded in a secure Audit Log for clinical compliance.
+## 🚀 Key Features
 
-## 🛠 Tech Stack
-* **Backend:** Java 21, Spring Boot 3.2.5, MySQL, Spring Security, JWT, WebSockets.
-* **Frontend:** Angular 18, Bootstrap 5, RxJS, STOMP.
-* **Testing:** JUnit 5, Mockito, MockMvc (Backend), Angular Testing Library (Frontend).
+* **Multi-Role Dashboards:** Distinct workspaces for Administrators, Doctors, and OPD Clerks, secured via Spring Security and route guards.
+* **Real-Time Staff Intercom:** A floating chat widget powered by STOMP WebSockets. Features dynamic topic routing to isolate conversations by medical department (e.g., Cardiology, Neurology).
+* **Global Emergency Override:** A zero-latency red-alert broadcast system that pushes emergency trauma notifications to all active staff dashboards simultaneously.
+* **Smart Patient Triage:** An OPD intake queue that categorizes patients by priority (RED, YELLOW, GREEN) and allows smart-filtering for doctor assignment.
+* **JWT-Based Authentication:** Stateless session management with hashed credentials for secure, scalable access.
 
-## 📊 System Architecture
+## 💻 Tech Stack
 
+**Frontend:**
+* Angular 18 (Standalone Components)
+* Bootstrap 5 & CSS3
+* RxJS & SockJS (WebSocket Client)
 
-## 🏃 How to Run
-1. **Database:** Ensure MySQL is running and a database named `careflow` exists. Update `application.properties` with your DB credentials.
-2. **Backend:** ```bash
-   cd careflow-backend
-   mvn spring-boot:run
+**Backend:**
+* Java 21 & Spring Boot 3
+* Spring Security & JWT
+* Spring WebSocket / STOMP Message Broker
+* Spring Data JPA / Hibernate
+
+**Database:**
+* MySQL 8.0
+
+## ⚙️ Local Setup Instructions
+
+### Backend Configuration
+1. Navigate to `careflow-backend`.
+2. Update `src/main/resources/application.yml` with your local MySQL credentials.
+3. Ensure you have an empty MySQL schema named `hospital_db`.
+4. Run the application via `mvn spring-boot:run` (Hibernate will auto-generate the tables).
+
+### Frontend Configuration
+1. Navigate to `hospital-frontend`.
+2. Run `npm install` to download dependencies.
+3. Start the development server with `ng serve`.
+4. Access the Staff Portal at `http://localhost:4200/login`.
