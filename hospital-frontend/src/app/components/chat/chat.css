@@ -1,7 +1,4 @@
 .chat-toggle-btn {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -9,7 +6,6 @@
   color: white;
   border: none;
   font-size: 1.5rem;
-  z-index: 1050;
   transition: transform 0.2s;
 }
 
@@ -18,13 +14,12 @@
 }
 
 .chat-window {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
+  position: absolute;
+  bottom: 80px;
+  right: 0;
   width: 350px;
   height: 500px;
   background: white;
-  z-index: 1050;
   display: flex;
   flex-direction: column;
 }

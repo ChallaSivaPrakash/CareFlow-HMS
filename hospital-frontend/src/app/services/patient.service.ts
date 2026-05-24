@@ -48,6 +48,11 @@ export class PatientService {
     return this.http.post(this.api, patient, this.getAuthHeaders());
   }
 
+  // GET by ID
+  getPatientById(id: number) {
+    return this.http.get(`${this.api}/${id}`, this.getAuthHeaders());
+  }
+
   // UPDATE
   updatePatient(id: number, patient: any) {
     return this.http.put(`${this.api}/${id}`, patient, this.getAuthHeaders());
@@ -60,5 +65,18 @@ export class PatientService {
       headers: this.getAuthHeaders().headers,
       responseType: 'text' 
     });
+  }
+
+  // BEDS
+  suggestBed(triageColor: string) {
+    return this.http.get(`http://localhost:8080/api/beds/suggest?triageColor=${triageColor}`, this.getAuthHeaders());
+  }
+
+  getAvailableBeds() {
+    return this.http.get(`http://localhost:8080/api/beds/available`, this.getAuthHeaders());
+  }
+
+  allocateBed(bedId: number, patientId: string) {
+    return this.http.post(`http://localhost:8080/api/beds/allocate?bedId=${bedId}&patientId=${patientId}`, {}, this.getAuthHeaders());
   }
 }

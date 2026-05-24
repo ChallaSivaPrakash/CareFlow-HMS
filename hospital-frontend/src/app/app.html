@@ -7,5 +7,15 @@
 
 <router-outlet></router-outlet>
 
-<!-- Global Chat Component (Visible only when logged in) -->
-<app-chat *ngIf="authService.getToken()"></app-chat>
+<div class="fab-container" *ngIf="authService.getToken()">
+  <!-- Global Emergency Toggle Button -->
+  <button class="btn btn-danger rounded-circle shadow-lg p-3" 
+          (click)="toggleEmergency()" 
+          [class.active]="isEmergencyActive"
+          title="Trigger Trauma Alert">
+    <span style="font-size: 1.5rem;">🚨</span>
+  </button>
+
+  <!-- Global Chat Component -->
+  <app-chat></app-chat>
+</div>
