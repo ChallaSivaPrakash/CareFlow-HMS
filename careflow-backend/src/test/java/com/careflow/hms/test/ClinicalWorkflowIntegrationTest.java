@@ -18,6 +18,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional; 
 
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-
+@Transactional
 @ContextConfiguration(classes = CareflowApplication.class)
 public class ClinicalWorkflowIntegrationTest {
 
@@ -97,18 +98,18 @@ public class ClinicalWorkflowIntegrationTest {
 
     @Test
     public void testOTPGenerationAndValidationFlow() throws Exception {
+        // Generate a unique email every time the test runs
+        String uniqueEmail = "test_" + System.currentTimeMillis() + "@careflow.com";
+
         User user = new User();
-        user.setUsername("test@careflow.com");
+        user.setUsername(uniqueEmail);
         user.setPassword("password123");
         user.setRole("ROLE_ADMIN");
         userRepository.save(user);
 
         mockMvc.perform(post("/api/auth/forgot-password")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(Map.of("email", "test@careflow.com"))))
+                        .content(objectMapper.writeValueAsString(Map.of("email", uniqueEmail))))
                 .andExpect(status().isOk());
-
-        // OTP verification would require accessing the DB to get the generated OTP 
-        // or mocking the service. In an E2E test we'd check the response or DB.
     }
 }

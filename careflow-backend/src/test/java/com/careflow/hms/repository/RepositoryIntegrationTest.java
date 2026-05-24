@@ -60,8 +60,7 @@ public class RepositoryIntegrationTest {
 
         List<Patient> waitingPatients = patientRepository.findByStatus("WAITING");
         assertThat(waitingPatients).isNotEmpty();
-        assertThat(waitingPatients.stream().anyMatch(p -> p.getPatientId().equals("P1001"))).isTrue();
-    }
+        assertThat(waitingPatients.stream().anyMatch(p -> "P1001".equals(p.getPatientId()))).isTrue();    }
 
     @Test
     public void testBedOccupancyQuery() {
@@ -75,6 +74,5 @@ public class RepositoryIntegrationTest {
 
         List<Bed> freeBeds = bedRepository.findByIsOccupiedFalse();
         assertThat(freeBeds).isNotEmpty();
-        assertThat(freeBeds.stream().anyMatch(b -> b.getBedNumber().equals("B-101"))).isTrue();
-    }
+        assertThat(freeBeds.stream().anyMatch(b -> "B-101".equals(b.getBedNumber()))).isTrue();    }
 }
