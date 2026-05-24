@@ -10,6 +10,7 @@ A modern, enterprise-grade Hospital Management System designed to handle multi-r
 * **Smart Patient Triage:** An OPD intake queue that categorizes patients by priority (RED, YELLOW, GREEN) and allows smart-filtering for doctor assignment.
 * **JWT-Based Authentication:** Stateless session management with hashed credentials for secure, scalable access.
 
+
 ## 💻 Tech Stack
 
 **Frontend:**
@@ -39,3 +40,4 @@ A modern, enterprise-grade Hospital Management System designed to handle multi-r
 2. Run `npm install` to download dependencies.
 3. Start the development server with `ng serve`.
 4. Access the Staff Portal at `http://localhost:4200/login`.
+
