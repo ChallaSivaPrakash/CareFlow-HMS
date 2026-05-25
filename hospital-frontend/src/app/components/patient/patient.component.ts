@@ -93,26 +93,48 @@ export class PatientComponent implements OnInit {
       assignedDoctor: { id: this.patient.assignedDoctorId }, 
       status: 'WAITING' 
     };
+    
     this.service.addPatient(payload).subscribe((res: any) => { 
       if (this.patient.visitType === 'ADMITTED') {
+        // --- YOU WERE MISSING THIS API CALL LINE ---
         this.service.suggestBed(res.triageColor).subscribe((bed: any) => {
-          this.suggestedBed = bed;
-          this.selectedId = res.id; // Store patient ID for allocation
-          this.showBedModal = true;
-          this.service.getAvailableBeds().subscribe((beds: any) => this.availableBeds = beds);
+          if (bed && bed.id) {
+            this.suggestedBed = bed;
+            this.selectedId = res.id; 
+            this.showBedModal = true;
+            this.service.getAvailableBeds().subscribe((beds: any) => this.availableBeds = beds);
+          } else {
+            window.alert('No beds available for this triage level. Please assign a bed manually.');
+            this.getPatients(); 
+            this.toggleForm();
+          }
         });
+        // ---------------------------------------------
       } else {
-        this.getPatients(); 
+        this.getPatients();
         this.toggleForm();
       }
     });
   }
 
   confirmBedAllocation() {
-    this.service.allocateBed(this.suggestedBed.id, this.selectedId.toString()).subscribe(() => {
+    // Bulletproof null check
+    if (!this.suggestedBed || !this.suggestedBed.id) {
+      console.error("Lost track of the bed ID! Closing modal.");
       this.closeBedModal();
-      this.getPatients();
-      this.toggleForm();
+      return;
+    }
+
+    this.service.allocateBed(this.suggestedBed.id, this.selectedId.toString()).subscribe({
+      next: () => {
+        this.closeBedModal();
+        this.getPatients();
+        this.toggleForm();
+      },
+      error: (err) => {
+        console.error("Error allocating bed:", err);
+        alert("Failed to allocate bed. It may have just been taken.");
+      }
     });
   }
 

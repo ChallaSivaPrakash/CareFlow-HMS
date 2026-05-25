@@ -150,7 +150,9 @@ export class ProfileComponent implements OnInit {
     const role = this.userProfile.role;
     if (role === 'ROLE_ADMIN') this.router.navigate(['/admin-dashboard']);
     else if (role === 'ROLE_DOCTOR') this.router.navigate(['/doctor-dashboard']);
-    else if (role === 'ROLE_OPD_CLERK') this.router.navigate(['/clerk-dashboard']);
+    // --- FIX THIS LINE BELOW ---
+    else if (role === 'ROLE_OPD_CLERK') this.router.navigate(['/dashboard']); 
+    // ---------------------------
     else if (role === 'ROLE_PATIENT') this.router.navigate(['/patient-dashboard']);
     else this.router.navigate(['/dashboard']);
   }

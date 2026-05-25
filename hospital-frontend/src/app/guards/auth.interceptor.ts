@@ -5,7 +5,7 @@ import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService); // Inject the service
-  const token = localStorage.getItem('token');
+const token = localStorage.getItem('jwt_token');
   
   // Clone the request if token exists
   let authReq = req;
