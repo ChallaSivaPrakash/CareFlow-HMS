@@ -44,9 +44,9 @@ export class LoginComponent {
         } else if (role === 'ROLE_PATIENT') {
           this.router.navigate(['/patient-dashboard']);
         } else if (role === 'ROLE_OPD_CLERK') {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/opd-dashboard']);
         } else {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/login']);
         }
       },
       error: (err) => {

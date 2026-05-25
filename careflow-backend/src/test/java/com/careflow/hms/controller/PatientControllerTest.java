@@ -2,6 +2,7 @@ package com.careflow.hms.controller;
 
 import com.careflow.hms.CareflowApplication;
 import com.careflow.hms.entity.Patient;
+import com.careflow.hms.repository.DoctorRepository;
 import com.careflow.hms.repository.PatientRepository;
 import com.careflow.hms.service.AuditService;
 import com.careflow.hms.service.WebSocketNotificationService;
@@ -36,6 +37,9 @@ public class PatientControllerTest {
 
     @MockBean
     private PatientRepository patientRepository;
+
+    @MockBean
+    private DoctorRepository doctorRepository;
 
     @MockBean
     private ITriageService triageService;
