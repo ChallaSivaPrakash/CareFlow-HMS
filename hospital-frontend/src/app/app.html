@@ -7,7 +7,7 @@
 
 <router-outlet></router-outlet>
 
-<div class="fab-container" *ngIf="authService.getToken()">
+<div class="fab-container" *ngIf="isFabVisible">
   <!-- Global Emergency Toggle Button -->
   <button class="btn btn-danger rounded-circle shadow-lg p-3" 
           (click)="toggleEmergency()" 
