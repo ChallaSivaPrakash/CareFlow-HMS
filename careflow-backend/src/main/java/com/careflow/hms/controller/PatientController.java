@@ -2,6 +2,7 @@ package com.careflow.hms.controller;
 
 import com.careflow.hms.entity.Doctor;
 import com.careflow.hms.entity.Patient;
+import com.careflow.hms.repository.DoctorRepository;
 import com.careflow.hms.repository.PatientRepository;
 import com.careflow.hms.service.AuditService;
 import com.careflow.hms.service.WebSocketNotificationService;
@@ -21,12 +22,14 @@ import java.util.stream.Collectors;
 public class PatientController {
 
     private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
     private final ITriageService triageService;
     private final WebSocketNotificationService webSocketNotificationService;
     private final AuditService auditService;
 
-    public PatientController(PatientRepository patientRepository, ITriageService triageService, WebSocketNotificationService webSocketNotificationService, AuditService auditService) {
+    public PatientController(PatientRepository patientRepository, DoctorRepository doctorRepository, ITriageService triageService, WebSocketNotificationService webSocketNotificationService, AuditService auditService) {
         this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
         this.triageService = triageService;
         this.webSocketNotificationService = webSocketNotificationService;
         this.auditService = auditService;
@@ -48,17 +51,15 @@ public class PatientController {
     @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'DOCTOR')")
     public ResponseEntity<List<Patient>> getAllPatients() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        List<Patient> allPatients = patientRepository.findAll();
-
+        
         if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_DOCTOR"))) {
             String currentUsername = auth.getName();
-            // Assuming Doctor name or something matches currentUsername or we filter by assignedDoctor
-            return ResponseEntity.ok(allPatients.stream()
-                    .filter(p -> p.getAssignedDoctor() == null || p.getAssignedDoctor().getName().equals(currentUsername))
-                    .collect(Collectors.toList()));
+            return doctorRepository.findByEmail(currentUsername)
+                    .map(doctor -> ResponseEntity.ok(patientRepository.findByAssignedDoctorId(doctor.getId())))
+                    .orElse(ResponseEntity.ok(List.of())); // Return empty if doctor record not found
         }
 
-        return ResponseEntity.ok(allPatients);
+        return ResponseEntity.ok(patientRepository.findAll());
     }
 
     @GetMapping("/{id}")

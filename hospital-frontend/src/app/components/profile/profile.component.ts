@@ -145,15 +145,15 @@ export class ProfileComponent implements OnInit {
   onChangePassword(): void {
     this.successMessage = 'Security verification: An OTP has been sent to your email. Please verify.';
   }
-
+    
   goBack(): void {
     const role = this.userProfile.role;
     if (role === 'ROLE_ADMIN') this.router.navigate(['/admin-dashboard']);
     else if (role === 'ROLE_DOCTOR') this.router.navigate(['/doctor-dashboard']);
     // --- FIX THIS LINE BELOW ---
-    else if (role === 'ROLE_OPD_CLERK') this.router.navigate(['/dashboard']); 
+    else if (role === 'ROLE_OPD_CLERK') this.router.navigate(['/opd-dashboard']); 
     // ---------------------------
     else if (role === 'ROLE_PATIENT') this.router.navigate(['/patient-dashboard']);
-    else this.router.navigate(['/dashboard']);
+    else this.router.navigate(['/login']);
   }
 }

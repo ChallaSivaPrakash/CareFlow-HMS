@@ -4,8 +4,10 @@ import { AuthService } from '../services/auth.service';
 import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService); // Inject the service
-const token = localStorage.getItem('jwt_token');
+  const authService = inject(AuthService); 
+  const token = localStorage.getItem('jwt_token');
+  
+  console.log('Interceptor: Checking for token...', token ? 'Found' : 'Not Found');
   
   // Clone the request if token exists
   let authReq = req;

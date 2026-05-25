@@ -12,17 +12,20 @@ export class PatientService {
 
   // Helper method to attach your JWT badge to every request
   private getAuthHeaders() {
-    const token = localStorage.getItem('jwt_token') || '';
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+      console.error('PatientService: No JWT token found in localStorage!');
+    }
     return {
       headers: new HttpHeaders({
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token || ''}`
       })
     };
   }
 
   // GET
   getPatients() {
-    return this.http.get(this.api, this.getAuthHeaders());
+    return this.http.get(this.api);
   }
 
   // GET My Patients (Specific for Doctor Dashboard)

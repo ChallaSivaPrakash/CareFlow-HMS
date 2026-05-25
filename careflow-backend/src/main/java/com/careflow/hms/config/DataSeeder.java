@@ -50,14 +50,14 @@ public class DataSeeder implements CommandLineRunner {
         if (!userRepository.existsByUsername("clerk")) {
             User clerkUser = new User();
             clerkUser.setUsername("clerk");
-            clerkUser.setPassword(passwordEncoder.encode("clerk123"));
+            clerkUser.setPassword(passwordEncoder.encode("Clerk@321"));
             clerkUser.setRole("ROLE_OPD_CLERK");
             clerkUser.setName("Front Desk Clerk");
             clerkUser.setCreatedAt(LocalDateTime.now());
             clerkUser.setUpdatedAt(LocalDateTime.now());
             userRepository.save(clerkUser);
             
-            System.out.println("✅ Seeded Clerk: clerk / clerk123");
+            System.out.println("✅ Seeded Clerk: clerk / Clerk@321");
         }
     }
 }
