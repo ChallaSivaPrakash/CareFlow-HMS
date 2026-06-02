@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -41,7 +41,8 @@ export class PatientComponent implements OnInit {
     private service: PatientService, 
     private doctorService: DoctorService, 
     private webSocketService: WebSocketService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef // 2. Add to constructor
   ) {}
 
   ngOnInit(): void {
@@ -75,12 +76,20 @@ export class PatientComponent implements OnInit {
   }
 
   getPatients() {
-    this.service.getPatients().subscribe((data) => {
-      this.patients = data as any[];
-      this.activePatients = this.patients.filter(p => p.status !== 'DISCHARGED');
-      this.dischargedPatients = this.patients.filter(p => p.status === 'DISCHARGED');
+    this.service.getPatients().subscribe({
+      next: (data) => {
+        this.patients = data as any[];
+        this.activePatients = this.patients.filter(p => p.status !== 'DISCHARGED');
+        this.dischargedPatients = this.patients.filter(p => p.status === 'DISCHARGED');
+        this.cdr.detectChanges(); // 3. Force UI refresh immediately
+      },
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
   }
+
 
   addPatient() {
     console.log('Debugging addPatient payload:', this.patient);
@@ -90,7 +99,7 @@ export class PatientComponent implements OnInit {
     }
     const payload = { 
       ...this.patient, 
-      assignedDoctor: { id: this.patient.assignedDoctorId }, 
+      assignedDoctor: this.patient.assignedDoctorId ? { id: Number(this.patient.assignedDoctorId) } : null, 
       status: 'WAITING' 
     };
     
@@ -157,7 +166,7 @@ export class PatientComponent implements OnInit {
   updatePatient() {
     const payload = { 
       ...this.patient, 
-      assignedDoctor: { id: this.patient.assignedDoctorId } 
+      assignedDoctor: this.patient.assignedDoctorId ? { id: Number(this.patient.assignedDoctorId) } : null 
     };
     this.service.updatePatient(this.selectedId, payload).subscribe(() => { 
       this.getPatients(); 

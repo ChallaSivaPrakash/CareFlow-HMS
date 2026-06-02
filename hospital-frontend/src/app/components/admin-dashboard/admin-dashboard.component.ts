@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -69,7 +69,8 @@ export class AdminDashboardComponent implements OnInit {
     private clerkService: OpdClerkService,
     private patientService: PatientService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -85,10 +86,12 @@ export class AdminDashboardComponent implements OnInit {
       this.doctors = doctors || [];
       this.clerks = clerks || [];
       this.isLoading = false;
+      this.cdr.detectChanges();
     }).catch(err => {
       console.error('Error loading staff', err);
       this.errorMessage = 'Failed to load staff directory.';
       this.isLoading = false;
+      this.cdr.detectChanges();
     });
   }
 
