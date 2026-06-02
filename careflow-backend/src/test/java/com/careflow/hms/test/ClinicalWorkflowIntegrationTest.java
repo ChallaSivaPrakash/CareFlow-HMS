@@ -1,18 +1,15 @@
 package com.careflow.hms.test;
 
 import com.careflow.hms.CareflowApplication;
-import com.careflow.hms.entity.Bed;
 import com.careflow.hms.entity.Patient;
 import com.careflow.hms.entity.User;
-import com.careflow.hms.repository.BedRepository;
-import com.careflow.hms.repository.PatientRepository;
 import com.careflow.hms.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -35,18 +32,12 @@ public class ClinicalWorkflowIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PatientRepository patientRepository;
-
-    @Autowired
-    private BedRepository bedRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private JavaMailSender mailSender;
 
     @Test

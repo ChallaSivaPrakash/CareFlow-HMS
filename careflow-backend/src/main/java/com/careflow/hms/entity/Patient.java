@@ -62,7 +62,10 @@ public class Patient {
     public Patient() {
     }
 
-    public Patient(Long id, String patientId, String name, Integer age, String gender, String triageColor, String chiefComplaint, Double weight, String bloodPressure, Integer heartRate, Integer spO2, String assignedDepartment, Doctor assignedDoctor, String assignedBedId, String tempPatientId, String visitType, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Patient(Long id, String patientId, String name, Integer age, String gender, String triageColor,
+         String chiefComplaint, Double weight, String bloodPressure, Integer heartRate, Integer spO2,
+         String assignedDepartment, Doctor assignedDoctor, String assignedBedId, String tempPatientId,
+          String visitType, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.patientId = patientId;
         this.name = name;
