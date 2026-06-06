@@ -13,6 +13,9 @@ export class WebSocketService {
   private alertSubject = new Subject<any>();
   private chatSubject = new Subject<any>();
   private apiUrl = 'http://localhost:8080/api/chat';
+  private connected = false;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 10;
 
   constructor(private http: HttpClient) {
     this.client = new Client({
@@ -27,15 +30,27 @@ export class WebSocketService {
 
     this.client.onConnect = (frame) => {
       console.log('Connected to WebSocket', frame);
+      this.connected = true;
+      this.reconnectAttempts = 0;
       this.subscribeToAlerts();
+    };
+
+    this.client.onDisconnect = () => {
+      this.connected = false;
+      console.log('STOMP: Disconnected');
     };
 
     this.client.onStompError = (frame) => {
       console.error('Broker reported error: ' + frame.headers['message']);
       console.error('Additional details: ' + frame.body);
+      this.connected = false;
     };
 
     this.client.activate();
+  }
+
+  isConnected(): boolean {
+    return this.connected;
   }
 
   private subscribeToAlerts() {

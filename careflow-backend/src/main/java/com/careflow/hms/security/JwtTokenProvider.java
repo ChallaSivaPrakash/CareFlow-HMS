@@ -26,7 +26,10 @@ public class JwtTokenProvider {
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+        return generateToken(username, role);
+    }
 
+    public String generateToken(String username, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
@@ -39,6 +42,24 @@ public class JwtTokenProvider {
                 .expiration(expiryDate)
                 .signWith(key)
                 .compact();
+    }
+
+    public String generateRefreshToken(String username) {
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 604800000)) // 7 days
+                .signWith(key)
+                .compact();
+    }
+
+    public String extractUsernameFromExpiredToken(String token) {
+        try {
+            return extractUsername(token);
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
     }
 
     public String extractUsername(String token) {
