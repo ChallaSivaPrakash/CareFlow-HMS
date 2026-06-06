@@ -19,6 +19,8 @@ public class Patient {
     private String patientId;
 
     @NotBlank
+    @Convert(converter = com.careflow.hms.security.encryption.EncryptedStringConverter.class) 
+    @Column(columnDefinition = "TEXT") 
     private String name;
 
     @Min(0)
@@ -31,10 +33,14 @@ public class Patient {
 
     @NotBlank
     @Size(max = 500)
+    @Convert(converter = com.careflow.hms.security.encryption.EncryptedStringConverter.class) 
+    @Column(columnDefinition = "TEXT") 
     private String chiefComplaint;
 
     private Double weight;
 
+    @Convert(converter = com.careflow.hms.security.encryption.EncryptedStringConverter.class) 
+    @Column(columnDefinition = "TEXT") 
     private String bloodPressure;
 
     private Integer heartRate;
