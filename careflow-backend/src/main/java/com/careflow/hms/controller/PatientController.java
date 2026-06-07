@@ -49,6 +49,15 @@ public class PatientController {
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'DOCTOR')")
     public ResponseEntity<List<Patient>> getAllPatients() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        
+        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_DOCTOR"))) {
+            String currentUsername = auth.getName();
+            return doctorRepository.findByEmail(currentUsername)
+                    .map(doctor -> ResponseEntity.ok(patientRepository.findByAssignedDoctorId(doctor.getId())))
+                    .orElse(ResponseEntity.ok(List.of())); // Return empty if doctor record not found
+        }
+
         return ResponseEntity.ok(patientRepository.findAll());
     }
 

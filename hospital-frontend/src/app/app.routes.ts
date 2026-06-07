@@ -6,6 +6,7 @@ import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-d
 import { PatientDashboardComponent } from './components/patient-dashboard/patient-dashboard.component';
 import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role.guard';
+import { ProfileComponent } from './components/profile/profile.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { HomeComponent } from './components/home/home';
 
@@ -37,5 +38,6 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { expectedRole: 'ROLE_PATIENT' }
   },
-  { path: '**', redirectTo: '' } 
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: '**', redirectTo: 'login' } 
 ];

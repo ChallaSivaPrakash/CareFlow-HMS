@@ -1,8 +1,8 @@
 spring: 
   datasource: 
-    url: jdbc:mysql://localhost:3306/hospital_db?allowPublicKeyRetrieval=true&useSSL=false 
-    username: root 
-    password: Challa@1206 
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/${MYSQL_DATABASE:hospital_db}?allowPublicKeyRetrieval=true&useSSL=false 
+    username: ${MYSQL_USER:root} 
+    password: ${MYSQL_PASSWORD:Challa@1206} 
   jpa: 
     hibernate: 
       ddl-auto: update 
@@ -12,10 +12,10 @@ spring:
         format_sql: true
 
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: challasivaprakash6@gmail.com
-    password: abcdefghijklmnop
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:challasivaprakash6@gmail.com}
+    password: ${MAIL_PASSWORD:abcdefghijklmnop}
     properties:
       mail:
         smtp:
