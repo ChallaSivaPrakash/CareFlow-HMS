@@ -2,9 +2,12 @@ package com.careflow.hms.controller;
 
 import com.careflow.hms.dto.AuthResponse;
 import com.careflow.hms.dto.LoginRequest;
+import com.careflow.hms.dto.RefreshTokenRequest;
 import com.careflow.hms.entity.User;
 import com.careflow.hms.repository.UserRepository;
 import com.careflow.hms.security.JwtTokenProvider;
+import com.careflow.hms.security.refresh.RefreshToken;
+import com.careflow.hms.security.refresh.RefreshTokenService;
 import com.careflow.hms.service.PasswordResetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,13 +28,15 @@ public class AuthController {
     private final JwtTokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetService passwordResetService;
+    private final RefreshTokenService refreshTokenService;
 
-    public AuthController(UserRepository userRepository, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, PasswordEncoder passwordEncoder, PasswordResetService passwordResetService) {
+    public AuthController(UserRepository userRepository, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, PasswordEncoder passwordEncoder, PasswordResetService passwordResetService, RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
         this.passwordResetService = passwordResetService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/register")
@@ -58,11 +63,33 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
         String role = tokenProvider.extractRole(jwt);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginRequest.getUsername());
 
-        return ResponseEntity.ok(new AuthResponse(jwt, role, loginRequest.getUsername()));
+        return ResponseEntity.ok(new AuthResponse(jwt, refreshToken.getToken(), role, loginRequest.getUsername()));
     } catch (Exception e) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUsername)
+                .map(username -> {
+                    String role = userRepository.findByUsername(username)
+                            .map(User::getRole)
+                            .orElse("ROLE_USER");
+                    String newAccessToken = tokenProvider.generateToken(username, role);
+                    return ResponseEntity.ok(new AuthResponse(
+                            newAccessToken,
+                            refreshTokenService.createRefreshToken(username).getToken(),
+                            role,
+                            username
+                    ));
+                })
+                .orElseThrow(() -> new RuntimeException("Refresh token not found in database"));
     }
 
     @PostMapping("/forgot-password")

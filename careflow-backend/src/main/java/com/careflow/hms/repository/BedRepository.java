@@ -1,15 +1,11 @@
-package com.careflow.hms.repository;
-
-import com.careflow.hms.entity.Bed;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import java.util.List;
-import java.util.Optional;
-
-@Repository
-public interface BedRepository extends JpaRepository<Bed, Long> {
-    Optional<Bed> findByBedNumber(String bedNumber);
-    List<Bed> findByIsOccupiedFalse();
-    List<Bed> findByBedTypeAndIsOccupiedFalse(String bedType);
-    long countByBedTypeAndIsOccupied(String bedType, Boolean isOccupied);
-}
+package com.careflow.hms.repository; 
+ 
+ import com.careflow.hms.entity.Bed; 
+ import org.springframework.data.jpa.repository.JpaRepository; 
+ 
+ import java.util.List; 
+ 
+ public interface BedRepository extends JpaRepository<Bed, Long> { 
+     List<Bed> findByWard(String ward); 
+     List<Bed> findByOccupied(boolean occupied); 
+ } 

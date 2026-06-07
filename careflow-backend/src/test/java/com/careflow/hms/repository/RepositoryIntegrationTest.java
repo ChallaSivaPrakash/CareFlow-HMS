@@ -66,13 +66,12 @@ public class RepositoryIntegrationTest {
     public void testBedOccupancyQuery() {
         Bed bed = new Bed();
         bed.setBedNumber("B-101");
-        bed.setBedType("ICU");
-        bed.setIsOccupied(false);
-        bed.setWardName("ICU Ward");
+        bed.setOccupied(false);
+        bed.setWard("ICU Ward");
 
         bedRepository.save(bed);
 
-        List<Bed> freeBeds = bedRepository.findByIsOccupiedFalse();
+        List<Bed> freeBeds = bedRepository.findByOccupied(false);
         assertThat(freeBeds).isNotEmpty();
         assertThat(freeBeds.stream().anyMatch(b -> "B-101".equals(b.getBedNumber()))).isTrue();    }
 }

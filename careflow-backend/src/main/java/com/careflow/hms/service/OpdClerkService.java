@@ -38,14 +38,13 @@ public class OpdClerkService {
             String generatedUsername = clerk.getName().replaceAll("\\s+", "").toLowerCase();
             String defaultPassword = "Clerk@2026";
 
-            // Assuming your User class has a constructor that accepts these fields
-        User newClerkLogin = new User();
-newClerkLogin.setUsername(generatedUsername);
-newClerkLogin.setPassword(passwordEncoder.encode(defaultPassword));
-newClerkLogin.setRole("ROLE_OPD_CLERK");
-newClerkLogin.setName(clerk.getName());
-newClerkLogin.setCreatedAt(java.time.LocalDateTime.now());
-newClerkLogin.setUpdatedAt(java.time.LocalDateTime.now());
+            User newClerkLogin = new User();
+            newClerkLogin.setUsername(generatedUsername);
+            newClerkLogin.setPassword(passwordEncoder.encode(defaultPassword));
+            newClerkLogin.setRole("ROLE_OPD_CLERK");
+            newClerkLogin.setName(clerk.getName());
+            newClerkLogin.setCreatedAt(java.time.LocalDateTime.now());
+            newClerkLogin.setUpdatedAt(java.time.LocalDateTime.now());
             
             userRepository.save(newClerkLogin);
         }

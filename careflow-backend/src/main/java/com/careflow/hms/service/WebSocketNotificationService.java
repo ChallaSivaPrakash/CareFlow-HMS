@@ -30,4 +30,8 @@ public class WebSocketNotificationService {
     public void notifyDepartment(String department, String message) {
         messagingTemplate.convertAndSend("/topic/department." + department, message);
     }
+
+    public void sendToUser(String userId, String destination, Object payload) {
+        messagingTemplate.convertAndSendToUser(userId, destination, payload);
+    }
 }

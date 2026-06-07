@@ -19,6 +19,8 @@ public class Patient {
     private String patientId;
 
     @NotBlank
+    @Convert(converter = com.careflow.hms.security.encryption.EncryptedStringConverter.class) 
+    @Column(columnDefinition = "TEXT") 
     private String name;
 
     @Min(0)
@@ -31,10 +33,14 @@ public class Patient {
 
     @NotBlank
     @Size(max = 500)
+    @Convert(converter = com.careflow.hms.security.encryption.EncryptedStringConverter.class) 
+    @Column(columnDefinition = "TEXT") 
     private String chiefComplaint;
 
     private Double weight;
 
+    @Convert(converter = com.careflow.hms.security.encryption.EncryptedStringConverter.class) 
+    @Column(columnDefinition = "TEXT") 
     private String bloodPressure;
 
     private Integer heartRate;
@@ -62,7 +68,10 @@ public class Patient {
     public Patient() {
     }
 
-    public Patient(Long id, String patientId, String name, Integer age, String gender, String triageColor, String chiefComplaint, Double weight, String bloodPressure, Integer heartRate, Integer spO2, String assignedDepartment, Doctor assignedDoctor, String assignedBedId, String tempPatientId, String visitType, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Patient(Long id, String patientId, String name, Integer age, String gender, String triageColor,
+         String chiefComplaint, Double weight, String bloodPressure, Integer heartRate, Integer spO2,
+         String assignedDepartment, Doctor assignedDoctor, String assignedBedId, String tempPatientId,
+          String visitType, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.patientId = patientId;
         this.name = name;

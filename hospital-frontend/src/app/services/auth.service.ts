@@ -14,9 +14,10 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
         if (response && response.token) {
-          // Save the token
           localStorage.setItem('jwt_token', response.token);
-          // Save the role directly from the backend response!
+          if (response.refreshToken) {
+            localStorage.setItem('refresh_token', response.refreshToken);
+          }
           if (response.role) {
             localStorage.setItem('user_role', response.role);
           }
@@ -25,8 +26,23 @@ export class AuthService {
     );
   }
 
+  refreshToken(): Observable<any> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    return this.http.post(`${this.apiUrl}/refresh-token`, { refreshToken }).pipe(
+      tap((response: any) => {
+        if (response && response.token) {
+          localStorage.setItem('jwt_token', response.token);
+          if (response.refreshToken) {
+            localStorage.setItem('refresh_token', response.refreshToken);
+          }
+        }
+      })
+    );
+  }
+
   logout() {
     localStorage.removeItem('jwt_token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('user_role');
   }
 

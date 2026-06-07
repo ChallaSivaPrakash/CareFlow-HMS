@@ -1,8 +1,8 @@
 spring: 
   datasource: 
-    url: jdbc:mysql://localhost:3306/hospital_db?allowPublicKeyRetrieval=true&useSSL=false 
-    username: root 
-    password: Challa@1206 
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/${MYSQL_DATABASE:hospital_db}?allowPublicKeyRetrieval=true&useSSL=false 
+    username: ${MYSQL_USER:root} 
+    password: ${MYSQL_PASSWORD:Challa@1206} 
   jpa: 
     hibernate: 
       ddl-auto: update 
@@ -12,10 +12,10 @@ spring:
         format_sql: true
 
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME:your-email@gmail.com}
-    password: ${MAIL_PASSWORD:your-app-password}
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:challasivaprakash6@gmail.com}
+    password: ${MAIL_PASSWORD:abcdefghijklmnop}
     properties:
       mail:
         smtp:
@@ -23,12 +23,33 @@ spring:
           starttls:
             enable: true
 
+  
+
 app: 
   jwt: 
     secret: ${JWT_SECRET:7c6f6c75656e7465727072697365323032357365637265746b6579666f7268616d617070} 
-    expiration-ms: 1800000 
+    expiration-ms: 1800000     # 30 minutes
+    refresh:
+      expiration-ms: 604800000 # 7 days
   triage: 
     mode: heuristic 
+    engine: llm        # Options: heuristic, llm. Set to "heuristic" to disable AI. 
+    human-in-loop: true # Always true when engine=llm 
+
+websocket: 
+  broker: 
+    type: simple      # Options: simple, redis. Use "redis" for production. 
+    host: localhost 
+    port: 6379 
  
+payment: 
+  provider: stripe   # Options: stripe, razorpay 
+  stripe: 
+    secret-key: ${STRIPE_SECRET_KEY} 
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET} 
+
 server: 
   port: 8080 
+
+encryption: 
+  secret-key: ${ENCRYPTION_SECRET_KEY:WJ6dLSPFk/G7GYrMzP0o5w==}  # 256-bit AES key in Base64; override via env 

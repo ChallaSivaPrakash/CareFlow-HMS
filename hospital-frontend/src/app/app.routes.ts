@@ -8,9 +8,10 @@ import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role.guard';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { HomeComponent } from './components/home/home';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { 
@@ -38,5 +39,5 @@ export const routes: Routes = [
     data: { expectedRole: 'ROLE_PATIENT' }
   },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
-  { path: '**', redirectTo: 'login' } // <-- THIS CATCHES BLANK SCREENS
+  { path: '**', redirectTo: 'login' } 
 ];

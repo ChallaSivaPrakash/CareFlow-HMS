@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router'; // <-- ADD THIS LINE
@@ -30,6 +30,7 @@ export class DoctorDashboardComponent implements OnInit {
     private patientService: PatientService,
     private authService: AuthService,
     private webSocketService: WebSocketService,
+    private cdr: ChangeDetectorRef,
     private router: Router // <-- ADD THIS LINE
   ) {}
 
@@ -59,11 +60,13 @@ export class DoctorDashboardComponent implements OnInit {
         // Filter out DISCHARGED patients
         this.patients = data.filter(p => p.status?.toUpperCase() !== 'DISCHARGED');
         this.isLoading = false;
+        this.cdr.detectChanges(); // <--- ENSURE THIS IS HERE
       },
       error: (err) => {
         console.error('Error fetching patients', err);
         this.errorMessage = 'Failed to load patient records. Please try again later.';
         this.isLoading = false;
+        this.cdr.detectChanges(); // <--- AND HERE
       }
     });
   }
@@ -75,10 +78,12 @@ export class DoctorDashboardComponent implements OnInit {
         next: () => {
           this.successMessage = 'Patient discharged successfully.';
           this.fetchPatients();
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Error discharging patient', err);
           this.errorMessage = 'Failed to discharge patient.';
+          this.cdr.detectChanges();
         }
       });
     }
