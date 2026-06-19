@@ -32,7 +32,7 @@ app:
     refresh:
       expiration-ms: 604800000 # 7 days
   triage: 
-    mode: heuristic 
+    mode: llm
     engine: llm        # Options: heuristic, llm. Set to "heuristic" to disable AI. 
     human-in-loop: true # Always true when engine=llm 
 
@@ -52,4 +52,13 @@ server:
   port: 8080 
 
 encryption: 
-  secret-key: ${ENCRYPTION_SECRET_KEY:WJ6dLSPFk/G7GYrMzP0o5w==}  # 256-bit AES key in Base64; override via env 
+  secret-key: ${ENCRYPTION_SECRET_KEY:WJ6dLSPFk/G7GYrMzP0o5w==}  # 256-bit AES key in Base64; override via env
+
+management: 
+  endpoints: 
+    web: 
+      exposure: 
+        include: health,info 
+  endpoint: 
+    health: 
+      show-details: always 

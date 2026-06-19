@@ -1,63 +1,73 @@
 package com.careflow.hms.config;
 
 import com.careflow.hms.entity.User;
-import com.careflow.hms.entity.Doctor;
 import com.careflow.hms.repository.UserRepository;
-import com.careflow.hms.repository.DoctorRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 public class DataSeeder implements CommandLineRunner {
 
+    private static final Logger logger = LoggerFactory.getLogger(DataSeeder.class);
+
     private final UserRepository userRepository;
-    private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(UserRepository userRepository, DoctorRepository doctorRepository, PasswordEncoder passwordEncoder) {
+    public DataSeeder(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.doctorRepository = doctorRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
-        // Seed Admin / Doctor Account mapped to your real email for OTP testing
-        if (!userRepository.existsByUsername("challasivaprakash@gmail.com")) {
+        if (!userRepository.existsByUsername("admin")) {
+            User adminUser = new User();
+            adminUser.setUsername("admin");
+            adminUser.setPassword(passwordEncoder.encode("admin123"));
+            adminUser.setRole("ROLE_ADMIN");
+            adminUser.setName("System Admin");
+            adminUser.setActive(true);
+
+            userRepository.save(adminUser);
+            logger.info("Default admin user created: admin / admin123");
+        } else {
+            logger.info("Admin user already exists, skipping seed.");
+        }
+
+        if (!userRepository.existsByUsername("dr.sravan")) {
             User doctorUser = new User();
-            doctorUser.setUsername("challasivaprakash@gmail.com");
+            doctorUser.setUsername("dr.sravan");
             doctorUser.setPassword(passwordEncoder.encode("Doctor@2026"));
             doctorUser.setRole("ROLE_DOCTOR");
             doctorUser.setName("Dr. Sravan");
-            doctorUser.setCreatedAt(LocalDateTime.now());
-            doctorUser.setUpdatedAt(LocalDateTime.now());
-            userRepository.save(doctorUser);
+            doctorUser.setActive(true);
 
-            Doctor doctorProfile = new Doctor();
-            doctorProfile.setName("Dr. Sravan");
-            doctorProfile.setSpecialty("Cardiology");
-            doctorProfile.setDepartment("Cardiology");
-            doctorProfile.setContactNumber("9876543210");
-            doctorRepository.save(doctorProfile);
-            
-            System.out.println("✅ Seeded Doctor: challasivaprakash@gmail.com / Doctor@2026");
+            userRepository.save(doctorUser);
+            logger.info("Default doctor user created: dr.sravan / Doctor@2026");
+        } else {
+            logger.info("Doctor user already exists, skipping seed.");
         }
 
-        // Seed Clerk
         if (!userRepository.existsByUsername("clerk")) {
             User clerkUser = new User();
             clerkUser.setUsername("clerk");
-            clerkUser.setPassword(passwordEncoder.encode("Clerk@321"));
+            clerkUser.setPassword(passwordEncoder.encode("clerk123"));
             clerkUser.setRole("ROLE_OPD_CLERK");
             clerkUser.setName("Front Desk Clerk");
-            clerkUser.setCreatedAt(LocalDateTime.now());
-            clerkUser.setUpdatedAt(LocalDateTime.now());
+            clerkUser.setActive(true);
+
             userRepository.save(clerkUser);
-            
-            System.out.println("✅ Seeded Clerk: clerk / Clerk@321");
+            logger.info("Default clerk user created: clerk / clerk123");
+        } else {
+            userRepository.findByUsername("clerk").ifPresent(existingClerk -> {
+                existingClerk.setPassword(passwordEncoder.encode("Clerk@1206"));
+                existingClerk.setRole("ROLE_OPD_CLERK");
+                userRepository.save(existingClerk);
+                logger.info("Clerk user password and role reset: clerk / Clerk@1206");
+            });
         }
     }
 }

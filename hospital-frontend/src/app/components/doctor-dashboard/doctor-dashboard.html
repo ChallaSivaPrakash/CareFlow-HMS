@@ -1,130 +1,129 @@
-<div class="container-fluid py-4">
-  <!-- Header Section -->
-  <div class="row mb-4 animate-fade-in">
-    <div class="col">
-      <div class="d-flex align-items-center justify-content-between bg-white p-4 rounded-4 shadow-sm border-0">
+<div class="scanline-grid"></div>
+<div class="relative z-10 p-8 floating-environment">
+  <div class="container py-4">
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="d-flex align-items-center justify-content-between holo-3d-card p-6">
         <div>
-          <h2 class="fw-bold text-primary mb-1">Welcome back, Dr. {{ doctorName }}</h2>
-          <p class="text-muted mb-0">Here is the latest overview of your assigned patients.</p>
+          <h2 class="neon-glow-cyan tracking-wider font-bold uppercase mb-2">Welcome back, Dr. {{ doctorName }}</h2>
+          <p class="text-slate-400">Here is the latest overview of your assigned patients.</p>
         </div>
         <div class="d-flex align-items-center gap-3">
           
           <div class="d-none d-md-block">
-            <div class="badge bg-primary-soft text-primary p-2 px-3 rounded-pill">
-              <i class="bi bi-calendar-event me-2"></i> {{ today | date:'fullDate' }}
+            <div class="bg-purple-900/30 border border-purple-500/30 px-4 py-2 rounded-pill flex items-center gap-2">
+              <i class="bi bi-calendar-event text-purple-300"></i> {{ today | date:'fullDate' }}
             </div>
           </div>
-          <button (click)="logout()" class="btn btn-outline-danger rounded-pill px-4 fw-bold d-flex align-items-center">
+          <button (click)="logout()" class="px-5 py-2.5 bg-gradient-to-r from-red-900/40 to-pink-900/40 border border-red-500/40 rounded-xl text-white font-medium shadow-lg hover:border-pink-400/80 transition-all duration-300 uppercase text-xs tracking-widest flex items-center">
             <i class="bi bi-box-arrow-right me-2"></i> Sign Out
           </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Stats Overview (Optional extra touch) -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card border-0 shadow-sm rounded-4 h-100">
-        <div class="card-body p-4">
-          <h6 class="text-muted text-uppercase small fw-bold">Total Patients</h6>
-          <h2 class="mb-0 fw-bold">{{ patients.length }}</h2>
+    <!-- Stats Overview (Optional extra touch) -->
+    <div class="mb-8">
+      <div class="col-md-3">
+        <div class="holo-3d-card p-6">
+          <h6 class="text-slate-400 text-uppercase small font-bold mb-2">Total Patients</h6>
+          <h2 class="mb-0 font-bold neon-glow-purple">{{ patients.length }}</h2>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Main Content Area -->
-  <div class="row">
-    <div class="col-12">
-      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-          <h5 class="mb-0 fw-bold">Patient Roster</h5>
-          <div class="d-flex gap-2">
-            <button (click)="fetchPatients()" class="btn btn-light btn-sm rounded-pill px-3">
-              <i class="bi bi-arrow-clockwise me-1"></i> Refresh
-            </button>
-          </div>
-        </div>
-        
-        <div class="card-body p-0">
-          <!-- Loading State -->
-          <div *ngIf="isLoading" class="p-5 text-center">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-3 text-muted">Retrieving patient records...</p>
-          </div>
-
-          <!-- Error State -->
-          <div *ngIf="errorMessage" class="p-5 text-center">
-            <div class="alert alert-danger d-inline-block px-5 rounded-pill">
-              <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+    <!-- Main Content Area -->
+    <div class="row">
+      <div class="col-12">
+        <div class="holo-3d-card p-0 overflow-hidden">
+          <div class="p-4 border-b border-white/5 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 neon-glow-cyan font-bold">Patient Roster</h5>
+            <div class="d-flex gap-2">
+              <button (click)="fetchPatients()" class="px-4 py-2 bg-gradient-to-r from-slate-800/40 to-slate-700/40 border border-slate-500/40 rounded-xl text-white font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest flex items-center">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+              </button>
             </div>
           </div>
-
-          <!-- Empty State -->
-          <div *ngIf="!isLoading && !errorMessage && patients.length === 0" class="p-5 text-center">
-            <div class="mb-3 text-muted opacity-50">
-              <i class="bi bi-people" style="font-size: 3rem;"></i>
+          
+          <div class="p-0">
+            <!-- Loading State -->
+            <div *ngIf="isLoading" class="p-5 text-center">
+              <div class="spinner-border text-cyan-400" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-3 text-slate-400">Retrieving patient records...</p>
             </div>
-            <h5>No patients assigned yet</h5>
-            <p class="text-muted">New assignments will appear here automatically.</p>
-          </div>
 
-          <!-- Data Table -->
-          <div class="table-responsive" *ngIf="!isLoading && !errorMessage && patients.length > 0">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="bg-light text-muted small text-uppercase fw-bold">
-                <tr>
-                  <th class="ps-4">Patient ID</th>
-                  <th>Name</th>
-                  <th>Age / Gender</th>
-                  <th>Chief Complaint</th>
-                  <th>Status</th>
-                  <th class="text-end pe-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let patient of patients" class="patient-row">
-                  <td class="ps-4 fw-medium text-primary">#{{ patient.patientId }}</td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-sm bg-light rounded-circle me-3 d-flex align-items-center justify-content-center">
-                        {{ patient.name?.charAt(0) }}
+            <!-- Error State -->
+            <div *ngIf="errorMessage" class="p-5 text-center">
+              <div class="bg-red-900/20 border border-red-500/40 px-5 py-3 rounded-pill inline-block">
+                <i class="bi bi-exclamation-triangle-fill me-2 text-red-400"></i> {{ errorMessage }}
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!isLoading && !errorMessage && patients.length === 0" class="p-5 text-center">
+              <div class="mb-3 text-slate-500 opacity-50">
+                <i class="bi bi-people" style="font-size: 3rem;"></i>
+              </div>
+              <h5 class="text-slate-300">No patients assigned yet</h5>
+              <p class="text-slate-500">New assignments will appear here automatically.</p>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-responsive" *ngIf="!isLoading && !errorMessage && patients.length > 0">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="bg-slate-800/30 text-slate-400 small text-uppercase font-bold border-b border-white/5">
+                  <tr>
+                    <th class="ps-4">Patient ID</th>
+                    <th>Name</th>
+                    <th>Age / Gender</th>
+                    <th>Chief Complaint</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let patient of patients" class="patient-row hover:bg-slate-800/20">
+                    <td class="ps-4 font-medium neon-glow-cyan">#{{ patient.patientId }}</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-sm bg-slate-800/50 rounded-circle me-3 d-flex align-items-center justify-content-center border border-slate-500/30">
+                          {{ patient.name?.charAt(0) }}
+                        </div>
+                        <span class="font-bold text-slate-200">{{ patient.name }}</span>
                       </div>
-                      <span class="fw-bold">{{ patient.name }}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span class="text-dark">{{ patient.age }} yrs</span>
-                    <span class="text-muted mx-1">/</span>
-                    <span class="text-muted">{{ patient.gender }}</span>
-                  </td>
-                  <td>
-                    <div class="text-truncate" style="max-width: 250px;" [title]="patient.chiefComplaint">
-                      {{ patient.chiefComplaint }}
-                    </div>
-                  </td>
-                  <td>
-                    <span class="badge rounded-pill px-3 py-2 fw-medium" [ngClass]="getStatusBadgeClass(patient.status)">
-                      {{ patient.status }}
-                    </span>
-                  </td>
-                  <td class="text-end pe-4">
-                    <button (click)="dischargePatient(patient)" class="btn btn-sm btn-outline-success rounded-pill px-3 me-2 hover-shadow" title="Discharge Patient">
-                      <i class="bi bi-box-arrow-right me-1"></i> Discharge
-                    </button>
-                    <button (click)="openEditModal(patient)" class="btn btn-sm btn-outline-warning rounded-pill px-3 me-2 hover-shadow">
-                      <i class="bi bi-pencil me-1"></i> Edit
-                    </button>
-                    <button (click)="viewDetails(patient)" class="btn btn-outline-primary btn-sm rounded-pill px-3 hover-shadow">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    </td>
+                    <td>
+                      <span class="text-slate-300">{{ patient.age }} yrs</span>
+                      <span class="text-slate-500 mx-1">/</span>
+                      <span class="text-slate-500">{{ patient.gender }}</span>
+                    </td>
+                    <td>
+                      <div class="text-truncate" style="max-width: 250px;" [title]="patient.chiefComplaint">
+                        {{ patient.chiefComplaint }}
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge rounded-pill px-3 py-2 font-medium" [ngClass]="getStatusBadgeClass(patient.status)">
+                        {{ patient.status }}
+                      </span>
+                    </td>
+                    <td class="text-end pe-4">
+                      <button (click)="dischargePatient(patient)" class="px-3 py-1.5 bg-gradient-to-r from-green-900/40 to-emerald-900/40 border border-green-500/40 rounded-xl text-green-300 font-medium shadow-lg hover:border-emerald-400/80 transition-all duration-300 uppercase text-xs tracking-widest me-2" title="Discharge Patient">
+                        <i class="bi bi-box-arrow-right me-1"></i> Discharge
+                      </button>
+                      <button (click)="openEditModal(patient)" class="px-3 py-1.5 bg-gradient-to-r from-yellow-900/40 to-amber-900/40 border border-yellow-500/40 rounded-xl text-yellow-300 font-medium shadow-lg hover:border-amber-400/80 transition-all duration-300 uppercase text-xs tracking-widest me-2">
+                        <i class="bi bi-pencil me-1"></i> Edit
+                      </button>
+                      <button (click)="viewDetails(patient)" class="px-3 py-1.5 bg-gradient-to-r from-blue-900/40 to-indigo-900/40 border border-blue-500/40 rounded-xl text-blue-300 font-medium shadow-lg hover:border-indigo-400/80 transition-all duration-300 uppercase text-xs tracking-widest">
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -133,26 +132,26 @@
 </div>
 
 <!-- Edit Patient Modal Overlay -->
-<div *ngIf="showEditModal" class="modal-overlay d-flex align-items-center justify-content-center">
-  <div class="modal-card bg-white rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 500px;">
+<div *ngIf="showEditModal" class="modal-overlay d-flex align-items-center justify-content-center fixed inset-0 bg-black/70 z-50">
+  <div class="modal-card bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-4 shadow-lg animate-fade-in p-6" style="width: 100%; max-width: 500px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <h5 class="fw-bold mb-0">Update Patient Record</h5>
-        <p class="text-muted small mb-0">Patient: {{ editingPatient?.name }} (#{{ editingPatient?.patientId }})</p>
+        <h5 class="neon-glow-cyan font-bold mb-0">Update Patient Record</h5>
+        <p class="text-slate-400 small mb-0">Patient: {{ editingPatient?.name }} (#{{ editingPatient?.patientId }})</p>
       </div>
-      <button (click)="closeEditModal()" class="btn-close"></button>
+      <button (click)="closeEditModal()" class="btn-close text-white opacity-75 hover:opacity-100"></button>
     </div>
 
     <form (ngSubmit)="onUpdatePatient()" #patientEditForm="ngForm" *ngIf="editingPatient">
       <div class="mb-3">
-        <label class="form-label small fw-bold text-muted">Chief Complaint</label>
-        <textarea class="form-control rounded-3" name="editComplaint" [(ngModel)]="editingPatient.chiefComplaint" rows="3" required></textarea>
+        <label class="form-label small font-bold text-slate-400">Chief Complaint</label>
+        <textarea class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="editComplaint" [(ngModel)]="editingPatient.chiefComplaint" rows="3" required></textarea>
       </div>
 
       <div class="row g-3 mb-3">
         <div class="col-md-6">
-          <label class="form-label small fw-bold text-muted">Status</label>
-          <select class="form-select rounded-3" name="editStatus" [(ngModel)]="editingPatient.status" required>
+          <label class="form-label small font-bold text-slate-400">Status</label>
+          <select class="form-select bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="editStatus" [(ngModel)]="editingPatient.status" required>
             <option value="WAITING">WAITING</option>
             <option value="IN_TREATMENT">IN_TREATMENT</option>
             <option value="ADMITTED">ADMITTED</option>
@@ -161,8 +160,8 @@
           </select>
         </div>
         <div class="col-md-6">
-          <label class="form-label small fw-bold text-muted">Triage Color</label>
-          <select class="form-select rounded-3" name="editTriage" [(ngModel)]="editingPatient.triageColor" required>
+          <label class="form-label small font-bold text-slate-400">Triage Color</label>
+          <select class="form-select bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="editTriage" [(ngModel)]="editingPatient.triageColor" required>
             <option value="RED">RED (Immediate)</option>
             <option value="YELLOW">YELLOW (Urgent)</option>
             <option value="GREEN">GREEN (Standard)</option>
@@ -171,8 +170,8 @@
       </div>
 
       <div class="d-flex gap-2 mt-4">
-        <button type="button" (click)="closeEditModal()" class="btn btn-light rounded-pill fw-bold flex-grow-1">Cancel</button>
-        <button type="submit" class="btn btn-primary rounded-pill fw-bold flex-grow-1" [disabled]="!patientEditForm.form.valid || isSubmitting">
+        <button type="button" (click)="closeEditModal()" class="px-4 py-2 bg-gradient-to-r from-slate-800/40 to-slate-700/40 border border-slate-500/40 rounded-xl text-slate-300 font-medium shadow-lg hover:border-slate-400/80 transition-all duration-300 uppercase text-xs tracking-widest flex-grow-1">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purple-900/40 to-cyan-900/40 border border-purple-500/40 rounded-xl text-white font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest flex-grow-1" [disabled]="!patientEditForm.form.valid || isSubmitting">
           <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
           Update Record
         </button>
