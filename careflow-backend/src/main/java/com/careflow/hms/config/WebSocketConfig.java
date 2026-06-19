@@ -20,8 +20,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        if ("redis".equals(brokerType)) { 
-            // Redis pub/sub for production — enables horizontal scaling 
+        if ("redis".equals(brokerType) || "rabbitmq".equals(brokerType)) { 
+            // Use STOMP broker relay for production (Redis or RabbitMQ) — enables horizontal scaling 
             config.enableStompBrokerRelay("/topic", "/queue") 
                 .setRelayHost(brokerHost) 
                 .setRelayPort(brokerPort) 
@@ -30,7 +30,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setClientLogin("guest") 
                 .setClientPasscode("guest"); 
         } else { 
-            // Simple in-memory broker for development 
+            // Simple in-memory broker for development (default fallback) 
             config.enableSimpleBroker("/topic", "/queue"); 
         } 
         config.setApplicationDestinationPrefixes("/app");

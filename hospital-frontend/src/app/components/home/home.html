@@ -1,64 +1,67 @@
-<div class="home-wrapper">
-  <section class="hero-section text-center text-white py-5 d-flex align-items-center">
-    <div class="container py-5 animate-fade-in">
-      <h1 class="display-3 fw-bold mb-3">Intelligent Hospital Management</h1>
-      <p class="lead mb-4 opacity-75">Streamlining healthcare operations with precision and care.</p>
-      
-      <div class="mt-4 mb-5">
-        <a routerLink="/login" class="btn btn-light btn-lg px-5 py-3 rounded-pill fw-bold shadow text-primary fs-5 hover-shadow-lg">
-          <i class="bi bi-box-arrow-in-right me-2"></i> Access Secure Portal
-        </a>
-      </div>
+<div class="scanline-grid"></div>
+<div class="relative z-10 p-8 floating-environment">
+  <div class="home-wrapper">
+    <section class="hero-section text-center py-5 d-flex align-items-center min-h-[80vh]">
+      <div class="container py-5 animate-fade-in">
+        <h1 class="display-3 neon-glow-purple mb-3 font-bold">Intelligent Hospital Management</h1>
+        <p class="lead mb-4 text-slate-400">Streamlining healthcare operations with precision and care.</p>
+        
+        <div class="mt-4 mb-5">
+          <a routerLink="/login" class="px-6 py-3 bg-gradient-to-r from-purple-900/40 to-cyan-900/40 border border-purple-500/40 rounded-xl text-white font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest btn-lg">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Access Secure Portal
+          </a>
+        </div>
 
-      <div class="hero-badge d-inline-block px-4 py-2 rounded-pill bg-white text-primary fw-bold shadow-sm mt-3">
-        <i class="bi bi-shield-check me-2"></i> CareFlow Enterprise HMS
+        <div class="hero-badge d-inline-block px-4 py-2 rounded-pill bg-slate-800/30 border border-slate-500/30 text-purple-300 font-bold mt-3">
+          <i class="bi bi-shield-check me-2"></i> CareFlow Enterprise HMS
+        </div>
+      </div>
+    </section>
+
+    <div class="container my-5">
+      <h3 class="text-center neon-glow-cyan font-bold mb-5">Core System Modules</h3>
+      <div class="row g-4 justify-content-center">
+        
+        <div class="col-md-4">
+          <div class="holo-3d-card h-100">
+            <div class="p-6 text-center">
+              <div class="portal-icon bg-purple-900/30 text-purple-300 rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center border border-purple-500/30">
+                <i class="bi bi-person-badge h2 mb-0"></i>
+              </div>
+              <h4 class="font-bold mb-3 text-slate-200">Physician Portal</h4>
+              <p class="text-slate-400 mb-0">Access patient rosters, diagnostics, and consultation tools.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="holo-3d-card h-100">
+            <div class="p-6 text-center">
+              <div class="portal-icon bg-green-900/30 text-green-300 rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center border border-green-500/30">
+                <i class="bi bi-hospital h2 mb-0"></i>
+              </div>
+              <h4 class="font-bold mb-3 text-slate-200">OPD Registration</h4>
+              <p class="text-slate-400 mb-0">Streamlined patient intake, triage, and bed allocation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="holo-3d-card h-100">
+            <div class="p-6 text-center">
+              <div class="portal-icon bg-cyan-900/30 text-cyan-300 rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center border border-cyan-500/30">
+                <i class="bi bi-gear-wide-connected h2 mb-0"></i>
+              </div>
+              <h4 class="font-bold mb-3 text-slate-200">System Administration</h4>
+              <p class="text-slate-400 mb-0">Manage staff directories, security policies, and hospital infrastructure.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
 
-  <div class="container my-5">
-    <h3 class="text-center fw-bold mb-5 text-muted">Core System Modules</h3>
-    <div class="row g-4 justify-content-center">
-      
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-          <div class="card-body p-5 text-center">
-            <div class="portal-icon bg-primary-soft text-primary rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
-              <i class="bi bi-person-badge h2 mb-0"></i>
-            </div>
-            <h4 class="fw-bold mb-3">Physician Portal</h4>
-            <p class="text-muted mb-0">Access patient rosters, diagnostics, and consultation tools.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-          <div class="card-body p-5 text-center">
-            <div class="portal-icon bg-success-soft text-success rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
-              <i class="bi bi-hospital h2 mb-0"></i>
-            </div>
-            <h4 class="fw-bold mb-3">OPD Registration</h4>
-            <p class="text-muted mb-0">Streamlined patient intake, triage, and bed allocation.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-          <div class="card-body p-5 text-center">
-            <div class="portal-icon bg-info-soft text-info rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
-              <i class="bi bi-gear-wide-connected h2 mb-0"></i>
-            </div>
-            <h4 class="fw-bold mb-3">System Administration</h4>
-            <p class="text-muted mb-0">Manage staff directories, security policies, and hospital infrastructure.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <footer class="text-center py-4 text-slate-500 border-t border-white/5 mt-5">
+      <p class="small mb-0">&copy; 2026 CareFlow Enterprise HMS. All rights reserved.</p>
+    </footer>
   </div>
-
-  <footer class="text-center py-4 text-muted border-top mt-5">
-    <p class="small mb-0">&copy; 2026 CareFlow Enterprise HMS. All rights reserved.</p>
-  </footer>
 </div>

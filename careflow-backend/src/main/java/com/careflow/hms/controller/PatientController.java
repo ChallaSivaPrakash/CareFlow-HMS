@@ -7,6 +7,7 @@ import com.careflow.hms.repository.PatientRepository;
 import com.careflow.hms.service.AuditService;
 import com.careflow.hms.service.WebSocketNotificationService;
 import com.careflow.hms.triage.ITriageService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -26,7 +27,7 @@ public class PatientController {
     private final WebSocketNotificationService webSocketNotificationService;
     private final AuditService auditService;
 
-    public PatientController(PatientRepository patientRepository, DoctorRepository doctorRepository, ITriageService triageService, WebSocketNotificationService webSocketNotificationService, AuditService auditService) {
+    public PatientController(PatientRepository patientRepository, DoctorRepository doctorRepository, @Qualifier("llmTriageService") ITriageService triageService, WebSocketNotificationService webSocketNotificationService, AuditService auditService) {
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.triageService = triageService;
@@ -35,7 +36,7 @@ public class PatientController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'CLERK')")
     public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
         Patient triagedPatient = triageService.processTriage(patient);
         Patient savedPatient = patientRepository.save(triagedPatient);
@@ -47,7 +48,7 @@ public class PatientController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'DOCTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'CLERK', 'DOCTOR')")
     public ResponseEntity<List<Patient>> getAllPatients() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         
@@ -62,7 +63,7 @@ public class PatientController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'DOCTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'CLERK', 'DOCTOR')")
     public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
         return patientRepository.findById(id)
                 .map(ResponseEntity::ok)
@@ -70,7 +71,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'DOCTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'CLERK', 'DOCTOR')")
     public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patientDetails) {
         return patientRepository.findById(id)
                 .map(patient -> {

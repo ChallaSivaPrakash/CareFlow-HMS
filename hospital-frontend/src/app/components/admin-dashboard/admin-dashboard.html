@@ -1,218 +1,221 @@
-<div class="admin-container p-4 min-vh-100 bg-light">
-  <!-- Header Section with Patient Search -->
-  <header class="mb-4 bg-white p-4 rounded-4 shadow-sm border-0 animate-fade-in">
-    <div class="row align-items-center">
-      <div class="col-md-4">
-        <h1 class="h3 fw-bold text-dark mb-0">Hospital Administration</h1>
-        <p class="text-muted mb-0">Staff management & patient lookup</p>
-      </div>
-      <div class="col-md-5">
-        <div class="input-group search-bar shadow-sm rounded-pill overflow-hidden border">
-          <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
-          <input type="text" class="form-control border-0 py-2" placeholder="Search Patient Name..." [(ngModel)]="searchName">
-          <input type="text" class="form-control border-0 py-2 border-start" placeholder="ID (Optional)" [(ngModel)]="searchPatientId" style="max-width: 120px;">
-          <button class="btn btn-primary px-4 fw-bold" (click)="onSearchPatients()">Lookup</button>
+<div class="scanline-grid"></div>
+<div class="relative z-10 p-8 floating-environment">
+  <div class="admin-container p-4 min-vh-100">
+    <!-- Header Section with Patient Search -->
+    <header class="mb-4 holo-3d-card p-4 animate-fade-in">
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <h1 class="h3 neon-glow-purple mb-0">Hospital Administration</h1>
+          <p class="text-slate-400 mb-0">Staff management & patient lookup</p>
+        </div>
+        <div class="col-md-5">
+          <div class="input-group search-bar shadow-sm rounded-pill overflow-hidden border border-slate-500/30 bg-slate-800/30">
+            <span class="input-group-text bg-transparent border-0 ps-3"><i class="bi bi-search text-slate-400"></i></span>
+            <input type="text" class="form-control bg-transparent border-0 py-2 text-slate-200" placeholder="Search Patient Name..." [(ngModel)]="searchName">
+            <input type="text" class="form-control bg-transparent border-0 py-2 border-start border-slate-500/30 text-slate-200" placeholder="ID (Optional)" [(ngModel)]="searchPatientId" style="max-width: 120px;">
+            <button class="px-4 py-2 bg-gradient-to-r from-purple-900/40 to-cyan-900/40 border border-purple-500/40 rounded-xl text-white font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest" (click)="onSearchPatients()">Lookup</button>
+          </div>
+        </div>
+        <div class="col-md-3 text-end d-flex align-items-center justify-content-end gap-2">
+          <button (click)="logout()" class="px-4 py-2 bg-gradient-to-r from-red-900/40 to-pink-900/40 border border-red-500/40 rounded-xl text-white font-medium shadow-lg hover:border-pink-400/80 transition-all duration-300 uppercase text-xs tracking-widest">
+            <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+          </button>
         </div>
       </div>
-      <div class="col-md-3 text-end d-flex align-items-center justify-content-end gap-2">
-        <button (click)="logout()" class="btn btn-outline-danger rounded-pill px-3 fw-bold btn-sm">
-          <i class="bi bi-box-arrow-right me-1"></i> Sign Out
-        </button>
+    </header>
+
+    <!-- Search Results Bar (if any) -->
+    <div *ngIf="searchResults.length > 0" class="bg-cyan-900/20 border border-cyan-500/40 rounded-4 shadow-sm mb-4 d-flex justify-content-between align-items-center p-4 animate-fade-in">
+      <div>
+        <i class="bi bi-info-circle-fill me-2 text-cyan-300"></i> Found <strong class="text-cyan-300">{{ searchResults.length }}</strong> patients matching your search.
+      </div>
+      <div class="d-flex gap-2">
+        <button *ngFor="let p of searchResults | slice:0:3" (click)="viewPatientHistory(p)" class="px-3 py-1 bg-gradient-to-r from-cyan-900/40 to-purple-900/40 border border-cyan-500/40 rounded-xl text-cyan-300 font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest">{{ p.name }} (#{{ p.patientId }})</button>
+        <button (click)="searchResults = []" class="text-slate-400 hover:text-slate-200 text-decoration-none">Clear</button>
       </div>
     </div>
-  </header>
 
-  <!-- Search Results Bar (if any) -->
-  <div *ngIf="searchResults.length > 0" class="alert alert-info rounded-4 border-0 shadow-sm mb-4 d-flex justify-content-between align-items-center animate-fade-in">
-    <div>
-      <i class="bi bi-info-circle-fill me-2"></i> Found <strong>{{ searchResults.length }}</strong> patients matching your search.
-    </div>
-    <div class="d-flex gap-2">
-      <button *ngFor="let p of searchResults | slice:0:3" (click)="viewPatientHistory(p)" class="btn btn-sm btn-primary rounded-pill px-3">{{ p.name }} (#{{ p.patientId }})</button>
-      <button (click)="searchResults = []" class="btn btn-sm btn-link text-dark text-decoration-none">Clear</button>
-    </div>
-  </div>
-
-  <div class="row g-4">
-    <!-- LEFT COLUMN: Staff Registration -->
-    <div class="col-lg-4">
-      <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 2rem;">
-        <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="card-title fw-bold mb-0">Register New Staff</h5>
-            <div class="btn-group btn-group-sm">
-              <button class="btn" [class.btn-primary]="activeTab === 'doctors'" [class.btn-light]="activeTab !== 'doctors'" (click)="activeTab = 'doctors'">Doctor</button>
-              <button class="btn" [class.btn-primary]="activeTab === 'clerks'" [class.btn-light]="activeTab !== 'clerks'" (click)="activeTab = 'clerks'">Clerk</button>
+    <div class="row g-4">
+      <!-- LEFT COLUMN: Staff Registration -->
+      <div class="col-lg-4">
+        <div class="holo-3d-card sticky-top" style="top: 2rem;">
+          <div class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="neon-glow-cyan mb-0">Register New Staff</h5>
+              <div class="btn-group btn-group-sm">
+                <button class="btn" [class.bg-purple-900/40]="activeTab === 'doctors'" [class.bg-slate-800/40]="activeTab !== 'doctors'" [class.border-purple-500/40]="activeTab === 'doctors'" [class.border-slate-500/40]="activeTab !== 'doctors'" [class.text-purple-300]="activeTab === 'doctors'" [class.text-slate-400]="activeTab !== 'doctors'" (click)="activeTab = 'doctors'">Doctor</button>
+                <button class="btn" [class.bg-cyan-900/40]="activeTab === 'clerks'" [class.bg-slate-800/40]="activeTab !== 'clerks'" [class.border-cyan-500/40]="activeTab === 'clerks'" [class.border-slate-500/40]="activeTab !== 'clerks'" [class.text-cyan-300]="activeTab === 'clerks'" [class.text-slate-400]="activeTab !== 'clerks'" (click)="activeTab = 'clerks'">Clerk</button>
+              </div>
             </div>
+            
+            <div *ngIf="successMessage" class="bg-green-900/20 border border-green-500/40 rounded-3 mb-4 p-3 text-green-300">{{ successMessage }}</div>
+            <div *ngIf="errorMessage" class="bg-red-900/20 border border-red-500/40 rounded-3 mb-4 p-3 text-red-300">{{ errorMessage }}</div>
+
+            <!-- Doctor Form -->
+            <form *ngIf="activeTab === 'doctors'" (ngSubmit)="onSubmitDoctor()" #doctorForm="ngForm">
+              <div class="mb-3">
+                <label class="form-label small font-bold text-slate-400">Full Name</label>
+                <input type="text" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="name" [(ngModel)]="newDoctor.name" required>
+              </div>
+              <div class="row g-3 mb-3">
+                <div class="col-6">
+                  <label class="form-label small font-bold text-slate-400">Specialty</label>
+                  <input type="text" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="spec" [(ngModel)]="newDoctor.specialty" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small font-bold text-slate-400">Department</label>
+                  <select class="form-select bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="dept" [(ngModel)]="newDoctor.department" required>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Emergency">Emergency</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small font-bold text-slate-400">Contact / Email</label>
+                <div class="input-group">
+                  <input type="tel" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3-start text-slate-200" name="phone" [(ngModel)]="newDoctor.contactNumber" placeholder="Phone" required>
+                  <input type="email" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3-end text-slate-200" name="email" [(ngModel)]="newDoctor.email" placeholder="Email">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small font-bold text-slate-400">Bio / Address</label>
+                <textarea class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 mb-2 text-slate-200" name="bio" [(ngModel)]="newDoctor.bio" placeholder="Professional Bio" rows="2"></textarea>
+                <input type="text" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="addr" [(ngModel)]="newDoctor.address" placeholder="Residential Address">
+              </div>
+              <div class="mb-4">
+                <label class="form-label small font-bold text-slate-400">Profile Image</label>
+                <div class="upload-zone border-dashed rounded-3 p-3 text-center bg-slate-800/30 border-slate-500/30 position-relative">
+                  <input type="file" (change)="onFileSelected($event)" accept="image/*" class="position-absolute w-100 h-100 top-0 start-0 opacity-0 cursor-pointer">
+                  <div *ngIf="!newDoctor.profileImageUrl">
+                    <i class="bi bi-cloud-arrow-up text-purple-300 h4"></i>
+                    <p class="small text-slate-400 mb-0">Upload Image</p>
+                  </div>
+                  <div *ngIf="newDoctor.profileImageUrl" class="animate-fade-in">
+                    <img [src]="newDoctor.profileImageUrl" class="rounded-circle border border-slate-500/30" width="40" height="40" style="object-fit: cover;">
+                    <span class="small text-green-300 ms-2">{{ fileName }}</span>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purple-900/40 to-cyan-900/40 border border-purple-500/40 rounded-xl text-white font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest w-100" [disabled]="!doctorForm.valid || isSubmitting">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span> Register Doctor
+              </button>
+            </form>
+
+            <!-- Clerk Form -->
+            <form *ngIf="activeTab === 'clerks'" (ngSubmit)="onSubmitClerk()" #clerkForm="ngForm">
+              <div class="mb-3">
+                <label class="form-label small font-bold text-slate-400">Full Name</label>
+                <input type="text" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="cname" [(ngModel)]="newClerk.name" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small font-bold text-slate-400">Email Address</label>
+                <input type="email" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="cemail" [(ngModel)]="newClerk.email" required>
+              </div>
+              <div class="row g-3 mb-3">
+                <div class="col-6">
+                  <label class="form-label small font-bold text-slate-400">Contact Number</label>
+                  <input type="tel" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="cphone" [(ngModel)]="newClerk.contactNumber" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small font-bold text-slate-400">Department</label>
+                  <select class="form-select bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="cdept" [(ngModel)]="newClerk.department" required>
+                    <option value="OPD Front Desk">OPD Front Desk</option>
+                    <option value="Records Office">Records Office</option>
+                    <option value="Emergency Desk">Emergency Desk</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="form-label small font-bold text-slate-400">Profile Image</label>
+                <div class="upload-zone border-dashed rounded-3 p-3 text-center bg-slate-800/30 border-slate-500/30 position-relative">
+                  <input type="file" (change)="onFileSelected($event)" accept="image/*" class="position-absolute w-100 h-100 top-0 start-0 opacity-0 cursor-pointer">
+                  <div *ngIf="!newClerk.profileImageUrl">
+                    <i class="bi bi-cloud-arrow-up text-cyan-300 h4"></i>
+                    <p class="small text-slate-400 mb-0">Upload Image</p>
+                  </div>
+                  <div *ngIf="newClerk.profileImageUrl" class="animate-fade-in">
+                    <img [src]="newClerk.profileImageUrl" class="rounded-circle border border-slate-500/30" width="40" height="40" style="object-fit: cover;">
+                    <span class="small text-green-300 ms-2">{{ fileName }}</span>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="px-4 py-2 bg-gradient-to-r from-cyan-900/40 to-purple-900/40 border border-cyan-500/40 rounded-xl text-white font-medium shadow-lg hover:border-purple-400/80 transition-all duration-300 uppercase text-xs tracking-widest w-100" [disabled]="!clerkForm.valid || isSubmitting">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span> Register Clerk
+              </button>
+            </form>
           </div>
-          
-          <div *ngIf="successMessage" class="alert alert-success rounded-3 mb-4">{{ successMessage }}</div>
-          <div *ngIf="errorMessage" class="alert alert-danger rounded-3 mb-4">{{ errorMessage }}</div>
-
-          <!-- Doctor Form -->
-          <form *ngIf="activeTab === 'doctors'" (ngSubmit)="onSubmitDoctor()" #doctorForm="ngForm">
-            <div class="mb-3">
-              <label class="form-label small fw-bold text-muted">Full Name</label>
-              <input type="text" class="form-control rounded-3" name="name" [(ngModel)]="newDoctor.name" required>
-            </div>
-            <div class="row g-3 mb-3">
-              <div class="col-6">
-                <label class="form-label small fw-bold text-muted">Specialty</label>
-                <input type="text" class="form-control rounded-3" name="spec" [(ngModel)]="newDoctor.specialty" required>
-              </div>
-              <div class="col-6">
-                <label class="form-label small fw-bold text-muted">Department</label>
-                <select class="form-select rounded-3" name="dept" [(ngModel)]="newDoctor.department" required>
-                  <option value="Cardiology">Cardiology</option>
-                  <option value="Neurology">Neurology</option>
-                  <option value="Emergency">Emergency</option>
-                  <option value="Pediatrics">Pediatrics</option>
-                </select>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small fw-bold text-muted">Contact / Email</label>
-              <div class="input-group">
-                <input type="tel" class="form-control rounded-3-start" name="phone" [(ngModel)]="newDoctor.contactNumber" placeholder="Phone" required>
-                <input type="email" class="form-control rounded-3-end" name="email" [(ngModel)]="newDoctor.email" placeholder="Email">
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small fw-bold text-muted">Bio / Address</label>
-              <textarea class="form-control rounded-3 mb-2" name="bio" [(ngModel)]="newDoctor.bio" placeholder="Professional Bio" rows="2"></textarea>
-              <input type="text" class="form-control rounded-3" name="addr" [(ngModel)]="newDoctor.address" placeholder="Residential Address">
-            </div>
-            <div class="mb-4">
-              <label class="form-label small fw-bold text-muted">Profile Image</label>
-              <div class="upload-zone border-dashed rounded-3 p-3 text-center bg-light position-relative">
-                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="position-absolute w-100 h-100 top-0 start-0 opacity-0 cursor-pointer">
-                <div *ngIf="!newDoctor.profileImageUrl">
-                  <i class="bi bi-cloud-arrow-up text-primary h4"></i>
-                  <p class="small text-muted mb-0">Upload Image</p>
-                </div>
-                <div *ngIf="newDoctor.profileImageUrl" class="animate-fade-in">
-                  <img [src]="newDoctor.profileImageUrl" class="rounded-circle border" width="40" height="40" style="object-fit: cover;">
-                  <span class="small text-success ms-2">{{ fileName }}</span>
-                </div>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold py-2" [disabled]="!doctorForm.valid || isSubmitting">
-              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span> Register Doctor
-            </button>
-          </form>
-
-          <!-- Clerk Form -->
-          <form *ngIf="activeTab === 'clerks'" (ngSubmit)="onSubmitClerk()" #clerkForm="ngForm">
-            <div class="mb-3">
-              <label class="form-label small fw-bold text-muted">Full Name</label>
-              <input type="text" class="form-control rounded-3" name="cname" [(ngModel)]="newClerk.name" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small fw-bold text-muted">Email Address</label>
-              <input type="email" class="form-control rounded-3" name="cemail" [(ngModel)]="newClerk.email" required>
-            </div>
-            <div class="row g-3 mb-3">
-              <div class="col-6">
-                <label class="form-label small fw-bold text-muted">Contact Number</label>
-                <input type="tel" class="form-control rounded-3" name="cphone" [(ngModel)]="newClerk.contactNumber" required>
-              </div>
-              <div class="col-6">
-                <label class="form-label small fw-bold text-muted">Department</label>
-                <select class="form-select rounded-3" name="cdept" [(ngModel)]="newClerk.department" required>
-                  <option value="OPD Front Desk">OPD Front Desk</option>
-                  <option value="Records Office">Records Office</option>
-                  <option value="Emergency Desk">Emergency Desk</option>
-                </select>
-              </div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label small fw-bold text-muted">Profile Image</label>
-              <div class="upload-zone border-dashed rounded-3 p-3 text-center bg-light position-relative">
-                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="position-absolute w-100 h-100 top-0 start-0 opacity-0 cursor-pointer">
-                <div *ngIf="!newClerk.profileImageUrl">
-                  <i class="bi bi-cloud-arrow-up text-primary h4"></i>
-                  <p class="small text-muted mb-0">Upload Image</p>
-                </div>
-                <div *ngIf="newClerk.profileImageUrl" class="animate-fade-in">
-                  <img [src]="newClerk.profileImageUrl" class="rounded-circle border" width="40" height="40" style="object-fit: cover;">
-                  <span class="small text-success ms-2">{{ fileName }}</span>
-                </div>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold py-2" [disabled]="!clerkForm.valid || isSubmitting">
-              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span> Register Clerk
-            </button>
-          </form>
         </div>
       </div>
-    </div>
 
-    <!-- RIGHT COLUMN: Staff Directory -->
-    <div class="col-lg-8">
-      <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold mb-0">Staff Directory</h5>
-            <button (click)="loadStaff()" class="btn btn-light btn-sm rounded-pill px-3"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-          </div>
+      <!-- RIGHT COLUMN: Staff Directory -->
+      <div class="col-lg-8">
+        <div class="holo-3d-card">
+          <div class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="neon-glow-cyan mb-0">Staff Directory</h5>
+              <button (click)="loadStaff()" class="px-4 py-2 bg-gradient-to-r from-slate-800/40 to-slate-700/40 border border-slate-500/40 rounded-xl text-slate-300 font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+            </div>
 
-          <div *ngIf="isLoading" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status"></div>
-          </div>
+            <div *ngIf="isLoading" class="text-center py-5">
+              <div class="spinner-border text-cyan-400" role="status"></div>
+            </div>
 
-          <div class="table-responsive" *ngIf="!isLoading">
-            <table class="table table-hover align-middle">
-              <thead class="bg-light">
-                <tr>
-                  <th class="border-0 small fw-bold text-muted ps-3">NAME & ROLE</th>
-                  <th class="border-0 small fw-bold text-muted">DEPT / SPEC</th>
-                  <th class="border-0 small fw-bold text-muted">CONTACT</th>
-                  <th class="border-0 small fw-bold text-muted text-end pe-3">ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Doctors List -->
-                <tr *ngFor="let dr of doctors" class="animate-fade-in">
-                  <td class="ps-3">
-                    <div class="d-flex align-items-center">
-                      <img [src]="dr.profileImageUrl || 'https://ui-avatars.com/api/?name=' + dr.name" class="rounded-circle me-3 border shadow-sm" width="45" height="45" style="object-fit: cover;">
-                      <div>
-                        <div class="fw-bold text-dark">{{ dr.name }}</div>
-                        <span class="badge bg-primary-subtle text-primary small">DOCTOR</span>
+            <div class="table-responsive" *ngIf="!isLoading">
+              <table class="table table-hover align-middle">
+                <thead class="bg-slate-800/30">
+                  <tr>
+                    <th class="border-0 small font-bold text-slate-400 ps-3">NAME & ROLE</th>
+                    <th class="border-0 small font-bold text-slate-400">DEPT / SPEC</th>
+                    <th class="border-0 small font-bold text-slate-400">CONTACT</th>
+                    <th class="border-0 small font-bold text-slate-400 text-end pe-3">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Doctors List -->
+                  <tr *ngFor="let dr of doctors" class="animate-fade-in hover:bg-slate-800/20">
+                    <td class="ps-3">
+                      <div class="d-flex align-items-center">
+                        <img [src]="dr.profileImageUrl || 'https://ui-avatars.com/api/?name=' + dr.name" class="rounded-circle me-3 border border-slate-500/30 shadow-sm" width="45" height="45" style="object-fit: cover;">
+                        <div>
+                          <div class="font-bold text-slate-200">{{ dr.name }}</div>
+                          <span class="badge bg-purple-900/30 text-purple-300 small border border-purple-500/30">DOCTOR</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="small fw-bold">{{ dr.department }}</div>
-                    <div class="small text-muted">{{ dr.specialty }}</div>
-                  </td>
-                  <td><div class="small">{{ dr.contactNumber }}</div><div class="small text-muted">{{ dr.email }}</div></td>
-                  <td class="text-end pe-3">
-                    <button (click)="viewDoctorOverview(dr)" class="btn btn-sm btn-outline-info rounded-circle me-2 p-1" title="View Overview"><i class="bi bi-graph-up" style="padding: 4px;"></i></button>
-                    <button (click)="openEditModal(dr, 'doctor')" class="btn btn-sm btn-outline-primary rounded-circle me-2 p-1" title="Edit"><i class="bi bi-pencil" style="padding: 4px;"></i></button>
-                    <button (click)="deactivateDoctor(dr.id)" class="btn btn-sm btn-outline-danger rounded-circle p-1" title="Deactivate"><i class="bi bi-trash" style="padding: 4px;"></i></button>
-                  </td>
-                </tr>
-                <!-- Clerks List -->
-                <tr *ngFor="let cl of clerks" class="animate-fade-in">
-                  <td class="ps-3">
-                    <div class="d-flex align-items-center">
-                      <img [src]="cl.profileImageUrl || 'https://ui-avatars.com/api/?name=' + cl.name" class="rounded-circle me-3 border shadow-sm" width="45" height="45" style="object-fit: cover;">
-                      <div>
-                        <div class="fw-bold text-dark">{{ cl.name }}</div>
-                        <span class="badge bg-info-subtle text-info small">CLERK</span>
+                    </td>
+                    <td>
+                      <div class="small font-bold text-slate-300">{{ dr.department }}</div>
+                      <div class="small text-slate-400">{{ dr.specialty }}</div>
+                    </td>
+                    <td><div class="small text-slate-300">{{ dr.contactNumber }}</div><div class="small text-slate-400">{{ dr.email }}</div></td>
+                    <td class="text-end pe-3">
+                      <button (click)="viewDoctorOverview(dr)" class="btn btn-sm bg-cyan-900/30 border border-cyan-500/30 text-cyan-300 rounded-circle me-2 p-1" title="View Overview"><i class="bi bi-graph-up" style="padding: 4px;"></i></button>
+                      <button (click)="openEditModal(dr, 'doctor')" class="btn btn-sm bg-purple-900/30 border border-purple-500/30 text-purple-300 rounded-circle me-2 p-1" title="Edit"><i class="bi bi-pencil" style="padding: 4px;"></i></button>
+                      <button (click)="deactivateDoctor(dr.id)" class="btn btn-sm bg-red-900/30 border border-red-500/30 text-red-300 rounded-circle p-1" title="Deactivate"><i class="bi bi-trash" style="padding: 4px;"></i></button>
+                    </td>
+                  </tr>
+                  <!-- Clerks List -->
+                  <tr *ngFor="let cl of clerks" class="animate-fade-in hover:bg-slate-800/20">
+                    <td class="ps-3">
+                      <div class="d-flex align-items-center">
+                        <img [src]="cl.profileImageUrl || 'https://ui-avatars.com/api/?name=' + cl.name" class="rounded-circle me-3 border border-slate-500/30 shadow-sm" width="45" height="45" style="object-fit: cover;">
+                        <div>
+                          <div class="font-bold text-slate-200">{{ cl.name }}</div>
+                          <span class="badge bg-cyan-900/30 text-cyan-300 small border border-cyan-500/30">CLERK</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td><div class="small fw-bold">{{ cl.department }}</div></td>
-                  <td><div class="small">{{ cl.contactNumber }}</div><div class="small text-muted">{{ cl.email }}</div></td>
-                  <td class="text-end pe-3">
-                    <button (click)="openEditModal(cl, 'clerk')" class="btn btn-sm btn-outline-primary rounded-circle me-2 p-1" title="Edit"><i class="bi bi-pencil" style="padding: 4px;"></i></button>
-                    <button (click)="deactivateClerk(cl.id)" class="btn btn-sm btn-outline-danger rounded-circle p-1" title="Deactivate"><i class="bi bi-trash" style="padding: 4px;"></i></button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    </td>
+                    <td><div class="small font-bold text-slate-300">{{ cl.department }}</div></td>
+                    <td><div class="small text-slate-300">{{ cl.contactNumber }}</div><div class="small text-slate-400">{{ cl.email }}</div></td>
+                    <td class="text-end pe-3">
+                      <button (click)="openEditModal(cl, 'clerk')" class="btn btn-sm bg-purple-900/30 border border-purple-500/30 text-purple-300 rounded-circle me-2 p-1" title="Edit"><i class="bi bi-pencil" style="padding: 4px;"></i></button>
+                      <button (click)="deactivateClerk(cl.id)" class="btn btn-sm bg-red-900/30 border border-red-500/30 text-red-300 rounded-circle p-1" title="Deactivate"><i class="bi bi-trash" style="padding: 4px;"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -221,34 +224,34 @@
 </div>
 
 <!-- DOCTOR OVERVIEW MODAL -->
-<div *ngIf="showOverviewModal" class="modal-overlay d-flex align-items-center justify-content-center">
-  <div class="modal-card bg-white rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 600px;">
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-      <h5 class="fw-bold mb-0">Doctor Overview: {{ overviewDoctor?.name }}</h5>
-      <button (click)="showOverviewModal = false" class="btn-close"></button>
+<div *ngIf="showOverviewModal" class="modal-overlay d-flex align-items-center justify-content-center fixed inset-0 bg-black/70 z-50">
+  <div class="modal-card bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 600px;">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-white/5 pb-3">
+      <h5 class="neon-glow-cyan mb-0">Doctor Overview: {{ overviewDoctor?.name }}</h5>
+      <button (click)="showOverviewModal = false" class="btn-close text-white opacity-75 hover:opacity-100"></button>
     </div>
     <div class="row g-4">
       <div class="col-md-4 text-center">
-        <img [src]="overviewDoctor?.profileImageUrl || 'https://ui-avatars.com/api/?name=' + overviewDoctor?.name" class="rounded-circle border shadow mb-3" width="120" height="120" style="object-fit: cover;">
-        <h6 class="fw-bold mb-1">{{ overviewDoctor?.specialty }}</h6>
-        <p class="small text-muted">{{ overviewDoctor?.department }}</p>
+        <img [src]="overviewDoctor?.profileImageUrl || 'https://ui-avatars.com/api/?name=' + overviewDoctor?.name" class="rounded-circle border border-slate-500/30 shadow mb-3" width="120" height="120" style="object-fit: cover;">
+        <h6 class="font-bold mb-1 text-slate-200">{{ overviewDoctor?.specialty }}</h6>
+        <p class="small text-slate-400">{{ overviewDoctor?.department }}</p>
       </div>
       <div class="col-md-8">
-        <label class="small fw-bold text-muted text-uppercase d-block mb-1">Professional Bio</label>
-        <p class="small mb-4 text-dark bg-light p-3 rounded-3">{{ overviewDoctor?.bio || 'No bio available.' }}</p>
+        <label class="small font-bold text-slate-400 text-uppercase d-block mb-1">Professional Bio</label>
+        <p class="small mb-4 text-slate-200 bg-slate-800/30 p-3 rounded-3">{{ overviewDoctor?.bio || 'No bio available.' }}</p>
         
-        <label class="small fw-bold text-muted text-uppercase d-block mb-1">Performance Summary</label>
-        <div class="p-3 border rounded-3">
+        <label class="small font-bold text-slate-400 text-uppercase d-block mb-1">Performance Summary</label>
+        <div class="p-3 border border-white/10 rounded-3">
           <div class="d-flex justify-content-between mb-2">
-            <span class="small">Assigned Patients</span>
-            <span class="fw-bold">12</span>
+            <span class="small text-slate-300">Assigned Patients</span>
+            <span class="font-bold text-purple-300">12</span>
           </div>
           <div class="d-flex justify-content-between mb-2">
-            <span class="small">Successful Discharges</span>
-            <span class="fw-bold text-success">45</span>
+            <span class="small text-slate-300">Successful Discharges</span>
+            <span class="font-bold text-green-300">45</span>
           </div>
           <div class="progress" style="height: 6px;">
-            <div class="progress-bar bg-success" style="width: 85%"></div>
+            <div class="progress-bar bg-green-500/70" style="width: 85%"></div>
           </div>
         </div>
       </div>
@@ -257,73 +260,73 @@
 </div>
 
 <!-- PATIENT HISTORY MODAL -->
-<div *ngIf="showPatientHistoryModal" class="modal-overlay d-flex align-items-center justify-content-center">
-  <div class="modal-card bg-white rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 700px;">
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+<div *ngIf="showPatientHistoryModal" class="modal-overlay d-flex align-items-center justify-content-center fixed inset-0 bg-black/70 z-50">
+  <div class="modal-card bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 700px;">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-white/5 pb-3">
       <div>
-        <h5 class="fw-bold mb-0">Patient Lookup: {{ selectedPatient?.name }}</h5>
-        <span class="small text-muted">ID: #{{ selectedPatient?.patientId }}</span>
+        <h5 class="neon-glow-cyan mb-0">Patient Lookup: {{ selectedPatient?.name }}</h5>
+        <span class="small text-slate-400">ID: #{{ selectedPatient?.patientId }}</span>
       </div>
-      <button (click)="showPatientHistoryModal = false" class="btn-close"></button>
+      <button (click)="showPatientHistoryModal = false" class="btn-close text-white opacity-75 hover:opacity-100"></button>
     </div>
     <div class="row g-4" *ngIf="selectedPatient">
       <div class="col-md-6">
-        <label class="small fw-bold text-muted text-uppercase">Vitals & Demographics</label>
+        <label class="small font-bold text-slate-400 text-uppercase">Vitals & Demographics</label>
         <ul class="list-group list-group-flush small mt-2">
-          <li class="list-group-item d-flex justify-content-between px-0"><span>Age / Gender</span> <strong>{{ selectedPatient.age }} yrs / {{ selectedPatient.gender }}</strong></li>
-          <li class="list-group-item d-flex justify-content-between px-0"><span>Blood Pressure</span> <strong>{{ selectedPatient.bloodPressure }}</strong></li>
-          <li class="list-group-item d-flex justify-content-between px-0"><span>Heart Rate</span> <strong>{{ selectedPatient.heartRate }} bpm</strong></li>
-          <li class="list-group-item d-flex justify-content-between px-0"><span>SpO2</span> <strong>{{ selectedPatient.spO2 }}%</strong></li>
+          <li class="list-group-item d-flex justify-content-between px-0 border-0"><span class="text-slate-400">Age / Gender</span> <strong class="text-slate-200">{{ selectedPatient.age }} yrs / {{ selectedPatient.gender }}</strong></li>
+          <li class="list-group-item d-flex justify-content-between px-0 border-0"><span class="text-slate-400">Blood Pressure</span> <strong class="text-slate-200">{{ selectedPatient.bloodPressure }}</strong></li>
+          <li class="list-group-item d-flex justify-content-between px-0 border-0"><span class="text-slate-400">Heart Rate</span> <strong class="text-slate-200">{{ selectedPatient.heartRate }} bpm</strong></li>
+          <li class="list-group-item d-flex justify-content-between px-0 border-0"><span class="text-slate-400">SpO2</span> <strong class="text-slate-200">{{ selectedPatient.spO2 }}%</strong></li>
         </ul>
       </div>
       <div class="col-md-6">
-        <label class="small fw-bold text-muted text-uppercase">Current Status</label>
-        <div class="p-3 bg-light rounded-3 mt-2">
+        <label class="small font-bold text-slate-400 text-uppercase">Current Status</label>
+        <div class="p-3 bg-slate-800/30 rounded-3 mt-2 border border-white/10">
           <div class="mb-2">
-            <span class="small d-block text-muted">Triage Priority</span>
-            <span class="badge rounded-pill px-3 py-1 mt-1" [class.bg-danger]="selectedPatient.triageColor === 'RED'" [class.bg-warning]="selectedPatient.triageColor === 'YELLOW'" [class.bg-success]="selectedPatient.triageColor === 'GREEN'">{{ selectedPatient.triageColor }}</span>
+            <span class="small d-block text-slate-400">Triage Priority</span>
+            <span class="badge rounded-pill px-3 py-1 mt-1" [class.bg-red-900/40]="selectedPatient.triageColor === 'RED'" [class.border-red-500/40]="selectedPatient.triageColor === 'RED'" [class.text-red-300]="selectedPatient.triageColor === 'RED'" [class.bg-yellow-900/40]="selectedPatient.triageColor === 'YELLOW'" [class.border-yellow-500/40]="selectedPatient.triageColor === 'YELLOW'" [class.text-yellow-300]="selectedPatient.triageColor === 'YELLOW'" [class.bg-green-900/40]="selectedPatient.triageColor === 'GREEN'" [class.border-green-500/40]="selectedPatient.triageColor === 'GREEN'" [class.text-green-300]="selectedPatient.triageColor === 'GREEN'">{{ selectedPatient.triageColor }}</span>
           </div>
           <div>
-            <span class="small d-block text-muted">Current Location</span>
-            <span class="fw-bold">{{ selectedPatient.assignedDepartment }} - Ward B</span>
+            <span class="small d-block text-slate-400">Current Location</span>
+            <span class="font-bold text-slate-200">{{ selectedPatient.assignedDepartment }} - Ward B</span>
           </div>
         </div>
       </div>
       <div class="col-12">
-        <label class="small fw-bold text-muted text-uppercase">Chief Complaint</label>
-        <p class="p-3 border rounded-3 italic-text mt-2 mb-0">"{{ selectedPatient.chiefComplaint }}"</p>
+        <label class="small font-bold text-slate-400 text-uppercase">Chief Complaint</label>
+        <p class="p-3 border border-white/10 rounded-3 italic-text mt-2 mb-0 text-slate-200">"{{ selectedPatient.chiefComplaint }}"</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- EDIT STAFF MODAL -->
-<div *ngIf="showEditModal" class="modal-overlay d-flex align-items-center justify-content-center">
-  <div class="modal-card bg-white rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 500px;">
+<div *ngIf="showEditModal" class="modal-overlay d-flex align-items-center justify-content-center fixed inset-0 bg-black/70 z-50">
+  <div class="modal-card bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-4 shadow-lg animate-fade-in p-4" style="width: 100%; max-width: 500px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h5 class="fw-bold mb-0">Edit {{ staffType | titlecase }} Details</h5>
-      <button (click)="closeEditModal()" class="btn-close"></button>
+      <h5 class="neon-glow-cyan mb-0">Edit {{ staffType | titlecase }} Details</h5>
+      <button (click)="closeEditModal()" class="btn-close text-white opacity-75 hover:opacity-100"></button>
     </div>
     <form (ngSubmit)="onUpdateStaff()" #editForm="ngForm" *ngIf="editingStaff">
       <div class="mb-3">
-        <label class="form-label small fw-bold text-muted">Full Name</label>
-        <input type="text" class="form-control rounded-3" name="editName" [(ngModel)]="editingStaff.name" required>
+        <label class="form-label small font-bold text-slate-400">Full Name</label>
+        <input type="text" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="editName" [(ngModel)]="editingStaff.name" required>
       </div>
       <div class="mb-3">
-        <label class="form-label small fw-bold text-muted">Email</label>
-        <input type="email" class="form-control rounded-3" name="editEmail" [(ngModel)]="editingStaff.email">
+        <label class="form-label small font-bold text-slate-400">Email</label>
+        <input type="email" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="editEmail" [(ngModel)]="editingStaff.email">
       </div>
       <div class="mb-3">
-        <label class="form-label small fw-bold text-muted">Contact Number</label>
-        <input type="tel" class="form-control rounded-3" name="editContact" [(ngModel)]="editingStaff.contactNumber" required>
+        <label class="form-label small font-bold text-slate-400">Contact Number</label>
+        <input type="tel" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="editContact" [(ngModel)]="editingStaff.contactNumber" required>
       </div>
       <div class="mb-4">
-        <label class="form-label small fw-bold text-muted">Profile Image URL</label>
-        <input type="text" class="form-control rounded-3" name="editImg" [(ngModel)]="editingStaff.profileImageUrl">
+        <label class="form-label small font-bold text-slate-400">Profile Image URL</label>
+        <input type="text" class="form-control bg-slate-800/50 border border-slate-500/30 rounded-3 text-slate-200" name="editImg" [(ngModel)]="editingStaff.profileImageUrl">
       </div>
       <div class="d-flex gap-2">
-        <button type="button" (click)="closeEditModal()" class="btn btn-light rounded-3 fw-bold flex-grow-1">Cancel</button>
-        <button type="submit" class="btn btn-primary rounded-3 fw-bold flex-grow-1" [disabled]="!editForm.form.valid || isSubmitting">Save Changes</button>
+        <button type="button" (click)="closeEditModal()" class="px-4 py-2 bg-gradient-to-r from-slate-800/40 to-slate-700/40 border border-slate-500/40 rounded-xl text-slate-300 font-medium shadow-lg hover:border-slate-400/80 transition-all duration-300 uppercase text-xs tracking-widest flex-grow-1">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purple-900/40 to-cyan-900/40 border border-purple-500/40 rounded-xl text-white font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest flex-grow-1" [disabled]="!editForm.form.valid || isSubmitting">Save Changes</button>
       </div>
     </form>
   </div>

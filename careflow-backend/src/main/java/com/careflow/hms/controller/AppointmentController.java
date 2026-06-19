@@ -9,6 +9,7 @@ package com.careflow.hms.controller;
  import com.careflow.hms.model.AppointmentNotification; 
  import org.springframework.http.HttpStatus; 
  import org.springframework.http.ResponseEntity; 
+ import org.springframework.security.access.prepost.PreAuthorize;
  import org.springframework.web.bind.annotation.*; 
  
  import java.time.LocalDate; 
@@ -29,6 +30,7 @@ package com.careflow.hms.controller;
      } 
  
      @GetMapping("/doctor/{doctorId}/slots") 
+     @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'CLERK', 'DOCTOR')") 
      public ResponseEntity<List<LocalDateTime>> getAvailableSlots( 
              @PathVariable Long doctorId, 
              @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) LocalDate date) { 
@@ -36,6 +38,7 @@ package com.careflow.hms.controller;
      } 
  
      @PostMapping("/book") 
+     @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'CLERK')") 
      public ResponseEntity<?> bookAppointment(@RequestBody AppointmentRequest request) { 
          try { 
              Appointment appointment = appointmentService.bookAppointment(request); 
@@ -62,11 +65,13 @@ package com.careflow.hms.controller;
      } 
  
      @GetMapping("/doctor/{doctorId}") 
+     @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'CLERK', 'DOCTOR')") 
      public ResponseEntity<List<Appointment>> getDoctorAppointments(@PathVariable Long doctorId) { 
          return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor(doctorId)); 
      } 
  
      @GetMapping("/patient/{patientId}") 
+     @PreAuthorize("hasAnyRole('ADMIN', 'OPD_CLERK', 'CLERK', 'DOCTOR')") 
      public ResponseEntity<List<Appointment>> getPatientAppointments(@PathVariable Long patientId) { 
          return ResponseEntity.ok(appointmentService.getAppointmentsByPatient(patientId)); 
      } 
