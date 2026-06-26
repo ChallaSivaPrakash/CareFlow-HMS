@@ -6,11 +6,12 @@ from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 
 from app.agents.triage_agent import run_triage
+from app.agents.booking_agent import run_booking_flow
 
 app = FastAPI(
-    title="CareFlow AI Triage Engine",
-    description="AI-powered patient triage service for CareFlow HMS",
-    version="1.0.0"
+    title="CareFlow AI Engine",
+    description="AI-powered services for CareFlow HMS (triage and booking)",
+    version="1.1.0"
 )
 
 # Track initialization state
@@ -52,12 +53,20 @@ class TriageResponse(BaseModel):
     recommended_action: str
     error: Optional[str] = None
 
+# Booking chat request/response
+class BookingChatRequest(BaseModel):
+    session_id: str
+    message: str
+
+class BookingChatResponse(BaseModel):
+    response: str
+
 @app.get("/health", tags=["System"])
 def health_check():
     return {
         "status": "healthy",
         "service": "careflow-ai-engine",
-        "version": "1.0.0"
+        "version": "1.1.0"
     }
 
 @app.get("/health/ready", tags=["System"])
@@ -95,3 +104,13 @@ async def triage_patient(request: TriageRequest):
         recommended_action=decision.get("recommended_action", "Patient requires assessment"),
         error=decision.get("error")
     )
+
+
+@app.post("/api/ai/chat/booking", response_model=BookingChatResponse, tags=["Booking"])
+async def booking_chat(request: BookingChatRequest):
+    """Conversational endpoint for booking appointments"""
+    if not request.session_id or not request.message:
+        raise HTTPException(status_code=400, detail="session_id and message are required.")
+    
+    response = await run_booking_flow(request.session_id, request.message)
+    return BookingChatResponse(response=response)

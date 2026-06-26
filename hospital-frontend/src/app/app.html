@@ -7,15 +7,15 @@
 
 <router-outlet></router-outlet>
 
+<!-- Keep emergency button, but remove old chat -->
 <div class="fab-container" *ngIf="isFabVisible">
-  <!-- Global Emergency Toggle Button -->
   <button class="btn btn-danger rounded-circle shadow-lg p-3" 
           (click)="toggleEmergency()" 
           [class.active]="isEmergencyActive"
           title="Trigger Trauma Alert">
     <span style="font-size: 1.5rem;">🚨</span>
   </button>
-
-  <!-- Global Chat Component -->
-  <app-chat></app-chat>
 </div>
+
+<!-- New Virtual Receptionist Chat Widget -->
+<app-chat-widget></app-chat-widget>

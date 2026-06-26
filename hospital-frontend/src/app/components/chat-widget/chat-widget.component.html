@@ -1,0 +1,73 @@
+<!-- Floating Action Button -->
+<button 
+  class="fixed bottom-6 right-6 z-[100] w-14 h-14 bg-cyan-900/40 border border-cyan-500/40 text-cyan-300 shadow-lg hover:border-cyan-300 transition-all duration-300 rounded-full flex items-center justify-center"
+  (click)="toggleChat()"
+>
+  <i class="bi bi-chat-dots text-2xl" *ngIf="!isOpen"></i>
+  <i class="bi bi-x-lg text-2xl" *ngIf="isOpen"></i>
+</button>
+
+<!-- Chat Window -->
+<div 
+  class="fixed bottom-24 right-6 z-[99] w-[350px] h-[450px]" 
+  *ngIf="isOpen"
+>
+  <div class="holo-3d-card h-full flex flex-col backdrop-blur-xl bg-slate-900/90">
+    <!-- Header -->
+    <div class="p-4 border-b border-white/10">
+      <h3 class="text-lg font-bold neon-glow-cyan">
+        <i class="bi bi-laptop me-2"></i>CareFlow Virtual Receptionist
+      </h3>
+      <p class="text-xs text-slate-400">Online</p>
+    </div>
+
+    <!-- Messages -->
+    <div 
+      id="chat-messages" 
+      class="flex-grow p-4 overflow-y-auto"
+    >
+      <div *ngFor="let msg of messages" class="clear-both">
+        <div 
+          class="rounded-xl p-3 mb-3 max-w-[85%]"
+          [ngClass]="{
+            'bg-purple-900/40 border border-purple-500/30 text-slate-200 float-right': msg.sender === 'user',
+            'bg-slate-800/60 border border-cyan-500/30 text-cyan-100 float-left': msg.sender === 'bot'
+          }"
+        >
+          {{ msg.text }}
+        </div>
+      </div>
+      
+      <!-- Loading Indicator -->
+      <div class="clear-both float-left mb-3" *ngIf="isLoading">
+        <div class="bg-slate-800/60 border border-cyan-500/30 rounded-xl p-3">
+          <div class="flex gap-1 items-center">
+            <div class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
+            <div class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
+            <div class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="p-4 border-t border-white/10">
+      <div class="flex gap-2">
+        <input 
+          type="text" 
+          [(ngModel)]="currentMessage"
+          (keyup.enter)="sendMessage()"
+          class="flex-grow bg-slate-800/60 border border-slate-500/30 rounded-xl px-4 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50"
+          placeholder="Type your message..."
+        >
+        <button 
+          class="px-4 py-2 bg-gradient-to-r from-purple-900/40 to-cyan-900/40 border border-purple-500/40 rounded-xl text-white font-medium shadow-lg hover:border-cyan-300 transition-all duration-300 uppercase text-xs tracking-widest"
+          (click)="sendMessage()"
+          [disabled]="isLoading || !currentMessage.trim()"
+        >
+          <i class="bi bi-send"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
