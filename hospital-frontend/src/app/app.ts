@@ -3,12 +3,12 @@ import { RouterOutlet, Router } from '@angular/router'; // <-- INJECT ROUTER
 import { CommonModule } from '@angular/common';
 import { WebSocketService } from './services/websocket.service';
 import { AuthService } from './services/auth.service';
-import { ChatComponent } from './components/chat/chat.component';
+import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, ChatComponent],
+  imports: [RouterOutlet, CommonModule, ChatWidgetComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

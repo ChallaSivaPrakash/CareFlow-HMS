@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   mysql:
     image: mysql:8.0
@@ -11,17 +10,15 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/8080' || exit 1"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
-
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
-
   backend:
     build: ./careflow-backend
     ports:
@@ -34,7 +31,7 @@ services:
       WEBSOCKET_BROKER_HOST: redis
       ENCRYPTION_SECRET_KEY: "NgYb7sE15YnJldHki+8UDlSFMn4WSJLwVHJ/r4jnL90="
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD-SHELL", "bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/8080' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -46,7 +43,6 @@ services:
         condition: service_started
       ai-engine:
         condition: service_healthy
-
   frontend:
     build: ./hospital-frontend
     ports:
@@ -54,7 +50,6 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-
   ai-engine:
     build: ./careflow-ai-engine
     ports:
@@ -70,7 +65,6 @@ services:
     depends_on:
       qdrant:
         condition: service_healthy
-
   qdrant:
     image: qdrant/qdrant:latest
     ports:
@@ -79,12 +73,11 @@ services:
     volumes:
       - qdrant_data:/qdrant/storage
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/8080' || exit 1"]
+      test: ["CMD-SHELL", "bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/6333' || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 60s
-
+      retries: 5
+      start_period: 10s
 volumes:
   mysql_data:
   qdrant_data:
