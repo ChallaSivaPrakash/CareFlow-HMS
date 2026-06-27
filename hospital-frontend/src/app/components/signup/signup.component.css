@@ -1,0 +1,125 @@
+/* Full Screen Background Wrapper */
+.login-fullscreen-bg {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Pushes the card to the right */
+  
+  /* --- IMAGE INTEGRATION --- */
+  /* 1. REPLACE THE URL BELOW WITH YOUR ACTUAL BACKGROUND IMAGE FILE */
+  /* 2. THE AI DOCTOR VISUAL CAN BE PART OF THIS IMAGE OR ABSOLUTELY POSITIONED SEPARATELY */
+  /* We use a darkening gradient overlay to ensure text contrast */
+  background: linear-gradient(to right, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.8)),
+              url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
+  
+  font-family: 'Inter', -apple-system, sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Optional separate AI Doctor Visual placement */
+/*
+.ai-doctor-visual {
+  position: absolute;
+  left: 10%;
+  bottom: 0;
+  max-width: 40%;
+  z-index: 1;
+}
+*/
+
+/* The Pop-up Glass Card */
+.login-popup-card {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 10; /* Ensures the form sits above any absolutely positioned background visuals */
+  
+  /* Glassmorphism Effect */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* The Entrance Animation */
+  opacity: 0;
+  transform: translateX(40px) scale(0.98);
+  animation: popInRight 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Animation Keyframes */
+@keyframes popInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Logo Styling */
+.hospital-logo {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Input Group Styling */
+.input-group-custom .input-group-text,
+.input-group-custom .form-control,
+.input-group-custom .toggle-btn {
+  background-color: rgba(248, 250, 252, 0.8);
+  border-color: #e2e8f0;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.input-group-custom:focus-within .input-group-text,
+.input-group-custom:focus-within .form-control,
+.input-group-custom:focus-within .toggle-btn {
+  border-color: #3b82f6;
+  background-color: #ffffff;
+}
+
+.custom-input:focus {
+  box-shadow: none;
+}
+
+.toggle-btn:hover {
+  background-color: #e2e8f0;
+}
+
+/* Primary Button Styling */
+.login-action-btn {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  transition: all 0.3s ease;
+}
+
+.login-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3) !important;
+}
+
+.login-action-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Simple fade for error messages */
+.fade-in {
+  animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

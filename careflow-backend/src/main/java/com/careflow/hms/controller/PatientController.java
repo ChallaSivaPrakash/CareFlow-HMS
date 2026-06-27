@@ -2,8 +2,10 @@ package com.careflow.hms.controller;
 
 import com.careflow.hms.entity.Doctor;
 import com.careflow.hms.entity.Patient;
+import com.careflow.hms.entity.User;
 import com.careflow.hms.repository.DoctorRepository;
 import com.careflow.hms.repository.PatientRepository;
+import com.careflow.hms.repository.UserRepository;
 import com.careflow.hms.service.AuditService;
 import com.careflow.hms.service.WebSocketNotificationService;
 import com.careflow.hms.triage.ITriageService;
@@ -23,16 +25,32 @@ public class PatientController {
 
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
     private final ITriageService triageService;
     private final WebSocketNotificationService webSocketNotificationService;
     private final AuditService auditService;
 
-    public PatientController(PatientRepository patientRepository, DoctorRepository doctorRepository, @Qualifier("llmTriageService") ITriageService triageService, WebSocketNotificationService webSocketNotificationService, AuditService auditService) {
+    public PatientController(PatientRepository patientRepository, DoctorRepository doctorRepository, UserRepository userRepository, @Qualifier("llmTriageService") ITriageService triageService, WebSocketNotificationService webSocketNotificationService, AuditService auditService) {
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
+        this.userRepository = userRepository;
         this.triageService = triageService;
         this.webSocketNotificationService = webSocketNotificationService;
         this.auditService = auditService;
+    }
+
+    // Get current patient's record
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<Patient> getCurrentPatient() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        // For now, let's just return the first patient (since we don't have user-patient mapping yet)
+        // In real implementation, you'd have a mapping between User and Patient
+        return patientRepository.findAll().stream()
+                .findFirst()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping

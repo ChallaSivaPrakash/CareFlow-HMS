@@ -1,6 +1,7 @@
 import random
 import os
 from fastapi import FastAPI, HTTPException, Response
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from typing import List, Optional, Dict, Any
@@ -12,6 +13,14 @@ app = FastAPI(
     title="CareFlow AI Engine",
     description="AI-powered services for CareFlow HMS (triage and booking)",
     version="1.1.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Or ["http://localhost:4200"]
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"], # Explicitly add OPTIONS
+    allow_headers=["*"],
 )
 
 # Track initialization state

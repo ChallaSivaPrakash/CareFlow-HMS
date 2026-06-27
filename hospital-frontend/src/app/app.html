@@ -1,21 +1,4 @@
-<div *ngIf="isRedAlertActive" class="emergency-banner">
-  <div class="banner-content">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    {{ alertMessage }}
-  </div>
-</div>
-
 <router-outlet></router-outlet>
 
-<!-- Keep emergency button, but remove old chat -->
-<div class="fab-container" *ngIf="isFabVisible">
-  <button class="btn btn-danger rounded-circle shadow-lg p-3" 
-          (click)="toggleEmergency()" 
-          [class.active]="isEmergencyActive"
-          title="Trigger Trauma Alert">
-    <span style="font-size: 1.5rem;">🚨</span>
-  </button>
-</div>
-
-<!-- New Virtual Receptionist Chat Widget -->
-<app-chat-widget></app-chat-widget>
+<!-- New Virtual Receptionist Chat Widget (only visible to patients/guests) -->
+<app-chat-widget *ngIf="showChatWidget"></app-chat-widget>

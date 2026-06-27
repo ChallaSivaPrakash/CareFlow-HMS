@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookingChatService } from '../../services/booking-chat.service';
+import { AuthService } from '../../services/auth.service';
+import { PatientService } from '../../services/patient.service';
 
 interface Message {
   sender: 'user' | 'bot';
@@ -21,18 +23,42 @@ export class ChatWidgetComponent implements OnInit {
   messages: Message[] = [];
   sessionId = '';
   currentMessage = '';
+  patientInfo: any = null;
 
-  constructor(private bookingChatService: BookingChatService) { }
+  constructor(
+    private bookingChatService: BookingChatService,
+    private authService: AuthService,
+    private patientService: PatientService
+  ) { }
 
   ngOnInit(): void {
     // Generate a unique session ID
     this.sessionId = this.generateSessionId();
     
-    // Add welcome message
-    this.messages.push({
-      sender: 'bot',
-      text: "Hi there! I'm your CareFlow Virtual Receptionist. How can I help you book an appointment today?"
-    });
+    // Check if user is a logged-in patient
+    if (this.authService.isLoggedIn() && this.authService.getUserRole() === 'PATIENT') {
+      this.patientService.getMyMedicalRecord().subscribe({
+        next: (data) => {
+          this.patientInfo = data;
+          this.messages.push({
+            sender: 'bot',
+            text: `Welcome back, ${data.name}! How can I help you book your session today?`
+          });
+        },
+        error: (err) => {
+          console.error('Error fetching patient info', err);
+          this.messages.push({
+            sender: 'bot',
+            text: "Hi there! I'm your CareFlow Virtual Receptionist. How can I help you book an appointment today?"
+          });
+        }
+      });
+    } else {
+      this.messages.push({
+        sender: 'bot',
+        text: "Hi there! I'm your CareFlow Virtual Receptionist. How can I help you book an appointment today?"
+      });
+    }
   }
 
   private generateSessionId(): string {
@@ -59,7 +85,18 @@ export class ChatWidgetComponent implements OnInit {
     this.currentMessage = '';
     this.isLoading = true;
 
-    this.bookingChatService.sendMessage(this.sessionId, userMessage).subscribe({
+    // If we have patient info, we can attach it to the message
+    let enhancedMessage = userMessage;
+    if (this.patientInfo) {
+      // Attach patient info to the message for the agent
+      enhancedMessage = `[PATIENT: ${JSON.stringify({
+        name: this.patientInfo.name,
+        age: this.patientInfo.age,
+        patientId: this.patientInfo.patientId
+      })}] ${userMessage}`;
+    }
+
+    this.bookingChatService.sendMessage(this.sessionId, enhancedMessage).subscribe({
       next: (response) => {
         this.messages.push({
           sender: 'bot',

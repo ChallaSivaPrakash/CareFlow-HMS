@@ -26,6 +26,10 @@ export class AuthService {
     );
   }
 
+  registerPatient(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData);
+  }
+
   refreshToken(): Observable<any> {
     const refreshToken = localStorage.getItem('refresh_token');
     return this.http.post(`${this.apiUrl}/refresh-token`, { refreshToken }).pipe(

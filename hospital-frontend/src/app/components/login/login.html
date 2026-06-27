@@ -1,14 +1,18 @@
 <div class="login-fullscreen-bg p-4 p-md-5">
   
+  <a routerLink="/" class="absolute top-6 right-6 text-sm text-blue-600 hover:text-blue-800 no-underline font-medium">
+    &larr; Home
+  </a>
+  
   <div class="card login-popup-card shadow-lg">
     <div class="card-body p-5">
       
       <div class="text-center mb-4">
         <div class="hospital-logo mb-3 shadow-sm">
-          <i class="bi bi-hospital text-primary display-5"></i>
+          <i class="bi bi-hospital text-blue-600 display-5"></i>
         </div>
-        <h3 class="fw-bold text-dark">Staff Portal</h3>
-        <p class="text-muted small">Sign in to access Hospital Directory</p>
+        <h3 class="fw-bold text-dark">CareFlow Portal</h3>
+        <p class="text-muted small">Sign in to access your medical dashboard.</p>
       </div>
 
       <div *ngIf="errorMessage" class="alert alert-danger py-2 small fade-in" role="alert">
@@ -18,7 +22,7 @@
       <div class="mb-3">
         <label class="form-label text-muted small fw-bold">Username</label>
         <div class="input-group input-group-custom">
-          <span class="input-group-text border-end-0"><i class="bi bi-person text-muted"></i></span>
+          <span class="input-group-text border-end-0"><i class="bi bi-person text-emerald-500"></i></span>
           <input type="text" class="form-control border-start-0 custom-input" placeholder="Enter username" [(ngModel)]="credentials.username">
         </div>
       </div>
@@ -26,7 +30,7 @@
       <div class="mb-4">
         <label class="form-label text-muted small fw-bold">Password</label>
         <div class="input-group input-group-custom">
-          <span class="input-group-text border-end-0"><i class="bi bi-shield-lock text-muted"></i></span>
+          <span class="input-group-text border-end-0"><i class="bi bi-shield-lock text-amber-500"></i></span>
           
           <input [type]="isPasswordVisible ? 'text' : 'password'" class="form-control border-start-0 border-end-0 custom-input" placeholder="Enter password" [(ngModel)]="credentials.password">
           
@@ -42,6 +46,10 @@
 
       <div class="text-center mb-3">
         <a routerLink="/forgot-password" class="text-decoration-none small fw-bold">Forgot Password?</a>
+      </div>
+      
+      <div class="text-center mt-4 pt-4 border-t border-slate-200">
+        <p class="text-sm text-slate-600">New Patient? <a routerLink="/signup" class="font-bold text-blue-600 hover:text-blue-800">Create an account</a></p>
       </div>
       
       <div class="text-center">

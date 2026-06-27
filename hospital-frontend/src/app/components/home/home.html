@@ -1,67 +1,34 @@
-<div class="scanline-grid"></div>
-<div class="relative z-10 p-8 floating-environment">
-  <div class="home-wrapper">
-    <section class="hero-section text-center py-5 d-flex align-items-center min-h-[80vh]">
-      <div class="container py-5 animate-fade-in">
-        <h1 class="display-3 neon-glow-purple mb-3 font-bold">Intelligent Hospital Management</h1>
-        <p class="lead mb-4 text-slate-400">Streamlining healthcare operations with precision and care.</p>
-        
-        <div class="mt-4 mb-5">
-          <a routerLink="/login" class="px-6 py-3 bg-gradient-to-r from-purple-900/40 to-cyan-900/40 border border-purple-500/40 rounded-xl text-white font-medium shadow-lg hover:border-cyan-400/80 transition-all duration-300 uppercase text-xs tracking-widest btn-lg">
-            <i class="bi bi-box-arrow-in-right me-2"></i> Access Secure Portal
-          </a>
-        </div>
-
-        <div class="hero-badge d-inline-block px-4 py-2 rounded-pill bg-slate-800/30 border border-slate-500/30 text-purple-300 font-bold mt-3">
-          <i class="bi bi-shield-check me-2"></i> CareFlow Enterprise HMS
-        </div>
+<div class="min-h-screen bg-slate-50 flex flex-col justify-between">
+  <section class="flex-grow flex items-center justify-center bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-800 text-white py-20 px-4 relative overflow-hidden shadow-inner">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_1px]"></div>
+    
+    <div class="max-w-3xl mx-auto text-center z-10 animate-fade-in">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-blue-100 text-xs font-semibold uppercase tracking-wider mb-6">
+        <i class="bi bi-shield-check-fill text-emerald-400"></i> CareFlow Patient Ecosystem
       </div>
-    </section>
-
-    <div class="container my-5">
-      <h3 class="text-center neon-glow-cyan font-bold mb-5">Core System Modules</h3>
-      <div class="row g-4 justify-content-center">
-        
-        <div class="col-md-4">
-          <div class="holo-3d-card h-100">
-            <div class="p-6 text-center">
-              <div class="portal-icon bg-purple-900/30 text-purple-300 rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center border border-purple-500/30">
-                <i class="bi bi-person-badge h2 mb-0"></i>
-              </div>
-              <h4 class="font-bold mb-3 text-slate-200">Physician Portal</h4>
-              <p class="text-slate-400 mb-0">Access patient rosters, diagnostics, and consultation tools.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="holo-3d-card h-100">
-            <div class="p-6 text-center">
-              <div class="portal-icon bg-green-900/30 text-green-300 rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center border border-green-500/30">
-                <i class="bi bi-hospital h2 mb-0"></i>
-              </div>
-              <h4 class="font-bold mb-3 text-slate-200">OPD Registration</h4>
-              <p class="text-slate-400 mb-0">Streamlined patient intake, triage, and bed allocation.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="holo-3d-card h-100">
-            <div class="p-6 text-center">
-              <div class="portal-icon bg-cyan-900/30 text-cyan-300 rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center border border-cyan-500/30">
-                <i class="bi bi-gear-wide-connected h2 mb-0"></i>
-              </div>
-              <h4 class="font-bold mb-3 text-slate-200">System Administration</h4>
-              <p class="text-slate-400 mb-0">Manage staff directories, security policies, and hospital infrastructure.</p>
-            </div>
-          </div>
-        </div>
+      
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 drop-shadow-sm">
+        Your Health, Intelligently Managed.
+      </h1>
+      
+      <p class="text-lg md:text-xl text-blue-100/90 max-w-xl mx-auto mb-10 font-normal leading-relaxed">
+        Securely book immediate appointments, access records, and let our AI triage engine fast-track your hospital check-in experience.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a routerLink="/login" class="w-full sm:w-auto px-8 py-4 bg-white text-blue-700 hover:bg-blue-50 font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-200 text-sm tracking-wide text-center">
+          <i class="bi bi-box-arrow-in-right me-2 text-base"></i> Portal Sign In / Sign Up
+        </a>
       </div>
     </div>
+  </section>
 
-    <footer class="text-center py-4 text-slate-500 border-t border-white/5 mt-5">
-      <p class="small mb-0">&copy; 2026 CareFlow Enterprise HMS. All rights reserved.</p>
-    </footer>
-  </div>
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 font-medium">
+    <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <p class="mb-0">&copy; 2026 CareFlow Enterprise HMS.</p>
+      <div class="flex gap-4">
+        <a routerLink="/login" class="text-slate-400 hover:text-blue-600 no-underline transition-colors">Staff Portal Console Access</a>
+      </div>
+    </div>
+  </footer>
 </div>
