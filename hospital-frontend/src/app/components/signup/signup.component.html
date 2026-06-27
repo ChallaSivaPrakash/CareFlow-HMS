@@ -1,0 +1,106 @@
+<div class="login-fullscreen-bg p-4 p-md-5">
+  
+  <a routerLink="/" class="absolute top-6 right-6 text-sm text-blue-600 hover:text-blue-800 no-underline font-medium">
+    &larr; Home
+  </a>
+  
+  <div class="card login-popup-card shadow-lg">
+    <div class="card-body p-5">
+      
+      <div class="text-center mb-4">
+        <div class="hospital-logo mb-3 shadow-sm">
+          <i class="bi bi-person-plus text-blue-600 display-5"></i>
+        </div>
+        <h3 class="fw-bold text-dark">Create Your Account</h3>
+        <p class="text-muted small">Sign up to access your medical dashboard.</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger py-2 small fade-in" role="alert">
+        <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+      </div>
+      
+      <div *ngIf="successMessage" class="alert alert-success py-2 small fade-in" role="alert">
+        <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-muted small fw-bold">Full Name</label>
+        <div class="input-group input-group-custom">
+          <span class="input-group-text border-end-0"><i class="bi bi-person text-emerald-500"></i></span>
+          <input type="text" class="form-control border-start-0 custom-input" placeholder="Enter your full name" [(ngModel)]="formData.fullName">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-muted small fw-bold">Email / Username</label>
+        <div class="input-group input-group-custom">
+          <span class="input-group-text border-end-0"><i class="bi bi-envelope text-blue-500"></i></span>
+          <input type="email" class="form-control border-start-0 custom-input" placeholder="Enter your email" [(ngModel)]="formData.email">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-muted small fw-bold">Password</label>
+        <div class="input-group input-group-custom">
+          <span class="input-group-text border-end-0"><i class="bi bi-lock text-emerald-500"></i></span>
+          
+          <input [type]="isPasswordVisible ? 'text' : 'password'" class="form-control border-start-0 border-end-0 custom-input" placeholder="Enter password" [(ngModel)]="formData.password">
+          
+          <button class="btn border border-start-0 text-muted toggle-btn" type="button" (click)="togglePassword()">
+            <i class="bi" [ngClass]="isPasswordVisible ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+          </button>
+        </div>
+        
+        <!-- Password Requirements -->
+        <div class="mt-2">
+          <div class="text-xs mb-1">
+            <i class="bi me-1" [ngClass]="hasMinLength ? 'bi-check-circle text-green-500' : 'bi-x-circle text-red-500'"></i>
+            <span [ngClass]="hasMinLength ? 'text-green-700' : 'text-red-700'">Minimum 8 characters</span>
+          </div>
+          <div class="text-xs mb-1">
+            <i class="bi me-1" [ngClass]="hasUpperCase ? 'bi-check-circle text-green-500' : 'bi-x-circle text-red-500'"></i>
+            <span [ngClass]="hasUpperCase ? 'text-green-700' : 'text-red-700'">At least one uppercase letter (A-Z)</span>
+          </div>
+          <div class="text-xs mb-1">
+            <i class="bi me-1" [ngClass]="hasLowerCase ? 'bi-check-circle text-green-500' : 'bi-x-circle text-red-500'"></i>
+            <span [ngClass]="hasLowerCase ? 'text-green-700' : 'text-red-700'">At least one lowercase letter (a-z)</span>
+          </div>
+          <div class="text-xs mb-1">
+            <i class="bi me-1" [ngClass]="hasNumber ? 'bi-check-circle text-green-500' : 'bi-x-circle text-red-500'"></i>
+            <span [ngClass]="hasNumber ? 'text-green-700' : 'text-red-700'">At least one number (0-9)</span>
+          </div>
+          <div class="text-xs">
+            <i class="bi me-1" [ngClass]="hasSpecialChar ? 'bi-check-circle text-green-500' : 'bi-x-circle text-red-500'"></i>
+            <span [ngClass]="hasSpecialChar ? 'text-green-700' : 'text-red-700'">At least one special character (@, #, $, %, etc.)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label text-muted small fw-bold">Confirm Password</label>
+        <div class="input-group input-group-custom">
+          <span class="input-group-text border-end-0"><i class="bi bi-lock text-amber-500"></i></span>
+          
+          <input [type]="isConfirmPasswordVisible ? 'text' : 'password'" class="form-control border-start-0 border-end-0 custom-input" placeholder="Confirm your password" [(ngModel)]="formData.confirmPassword">
+          
+          <button class="btn border border-start-0 text-muted toggle-btn" type="button" (click)="toggleConfirmPassword()">
+            <i class="bi" [ngClass]="isConfirmPasswordVisible ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+          </button>
+        </div>
+        <div class="mt-2 text-xs">
+          <i class="bi me-1" [ngClass]="passwordsMatch ? 'bi-check-circle text-green-500' : 'bi-x-circle text-red-500'"></i>
+          <span [ngClass]="passwordsMatch ? 'text-green-700' : 'text-red-700'">Passwords match</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-100 py-3 fw-bold mb-3 shadow-sm login-action-btn" (click)="onSignup()" [disabled]="!isFormValid">
+        Create Patient Account
+      </button>
+
+      <div class="text-center">
+        <p class="text-sm text-slate-600">Already registered? <a routerLink="/login" class="font-bold text-blue-600 hover:text-blue-800">Sign In</a></p>
+      </div>
+
+    </div>
+  </div>
+</div>

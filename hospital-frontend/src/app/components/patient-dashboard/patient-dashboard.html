@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <header class="d-flex justify-content-between align-items-center mb-5 bg-white p-4 rounded-4 shadow-sm border-0 animate-fade-in">
       <div>
-        <h1 class="h3 fw-bold text-primary mb-1">CareFlow Health Portal</h1>
+        <h1 class="h3 fw-bold text-primary mb-1">CareFlow Patient Portal</h1>
         <p class="text-muted mb-0">{{ today | date:'fullDate' }}</p>
       </div>
       <div class="d-flex align-items-center gap-3">
@@ -29,112 +29,135 @@
       </div>
     </div>
 
-    <!-- Main Content (Medical Record) -->
+    <!-- Main Content -->
     <div *ngIf="!isLoading && !errorMessage && medicalRecord" class="animate-fade-in">
       <div class="row g-4">
         
-        <!-- Left Column: Health Summary -->
-        <div class="col-lg-8">
+        <!-- Left Column: Welcome, AI Booking, Schedule -->
+        <div class="col-lg-9">
+          
+          <!-- Welcome Matrix -->
           <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
             <div class="card-header bg-primary text-white p-4 border-0">
-              <h5 class="mb-0 fw-bold">Health Summary</h5>
+              <h5 class="mb-0 fw-bold">Welcome back, {{ medicalRecord.name }}!</h5>
             </div>
             <div class="card-body p-4">
               <div class="row g-4">
                 <div class="col-md-6">
-                  <div class="p-3 bg-light rounded-3 h-100">
-                    <label class="small fw-bold text-muted text-uppercase d-block mb-1">Patient Name</label>
-                    <p class="h5 fw-bold text-dark mb-0">{{ medicalRecord.name }}</p>
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="p-3 bg-light rounded-3 h-100">
+                  <div class="p-3 bg-light rounded-3">
                     <label class="small fw-bold text-muted text-uppercase d-block mb-1">Age</label>
                     <p class="h5 fw-bold text-dark mb-0">{{ medicalRecord.age }} yrs</p>
                   </div>
                 </div>
-                <div class="col-md-3">
-                  <div class="p-3 bg-light rounded-3 h-100">
-                    <label class="small fw-bold text-muted text-uppercase d-block mb-1">Gender</label>
-                    <p class="h5 fw-bold text-dark mb-0">{{ medicalRecord.gender }}</p>
+                <div class="col-md-6">
+                  <div class="p-3 bg-light rounded-3">
+                    <label class="small fw-bold text-muted text-uppercase d-block mb-1">Triage Priority</label>
+                    <span class="badge rounded-pill px-3 py-2 fw-bold" [ngClass]="getTriageBadgeClass(medicalRecord.triageColor)">
+                      {{ medicalRecord.triageColor }}
+                    </span>
                   </div>
                 </div>
-                
                 <div class="col-12">
                   <div class="p-3 bg-light rounded-3">
-                    <label class="small fw-bold text-muted text-uppercase d-block mb-1">Reason for Visit (Chief Complaint)</label>
+                    <label class="small fw-bold text-muted text-uppercase d-block mb-1">Chief Complaint</label>
                     <p class="h6 text-dark mb-0 italic-text">"{{ medicalRecord.chiefComplaint }}"</p>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
-                    <div>
-                      <label class="small fw-bold text-muted text-uppercase d-block mb-1">Triage Priority</label>
-                      <span class="badge rounded-pill px-3 py-2 fw-bold" [ngClass]="getTriageBadgeClass(medicalRecord.triageColor)">
-                        {{ medicalRecord.triageColor }}
-                      </span>
-                    </div>
-                    <i class="bi bi-activity text-primary opacity-25" style="font-size: 2rem;"></i>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
-                    <div>
-                      <label class="small fw-bold text-muted text-uppercase d-block mb-1">Current Status</label>
-                      <span class="badge rounded-pill px-3 py-2 fw-bold" [ngClass]="getStatusBadgeClass(medicalRecord.status)">
-                        {{ medicalRecord.status }}
-                      </span>
-                    </div>
-                    <i class="bi bi-clipboard2-pulse text-primary opacity-25" style="font-size: 2rem;"></i>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- AI Booking Deck -->
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="card-header bg-white p-4 border-0">
+              <h5 class="mb-0 fw-bold text-primary">AI-Powered Appointment Booking</h5>
+            </div>
+            <div class="card-body p-4">
+              <form (ngSubmit)="submitBooking()" class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-muted text-uppercase">Age</label>
+                  <input type="number" class="form-control" [(ngModel)]="bookingForm.age" name="age" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-muted text-uppercase">Chief Complaint</label>
+                  <input type="text" class="form-control" [(ngModel)]="bookingForm.chiefComplaint" name="chiefComplaint" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-muted text-uppercase">Contact Number</label>
+                  <input type="tel" class="form-control" [(ngModel)]="bookingForm.contact" name="contact" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-muted text-uppercase">Email</label>
+                  <input type="email" class="form-control" [(ngModel)]="bookingForm.email" name="email" required>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold" [disabled]="isBooking">
+                    <span *ngIf="isBooking" class="spinner-border spinner-border-sm me-2"></span>
+                    {{ isBooking ? 'Processing...' : 'Book with AI' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Schedule Grid -->
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white p-4 border-0">
+              <h5 class="mb-0 fw-bold text-primary">My Appointments</h5>
+            </div>
+            <div class="card-body p-4">
+              <div *ngIf="appointments.length === 0" class="text-center py-5">
+                <p class="text-muted mb-0">No appointments scheduled yet.</p>
+              </div>
+              <div *ngIf="appointments.length > 0" class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Date & Time</th>
+                      <th>Doctor</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let appt of appointments">
+                      <td>{{ appt.startTime | date:'medium' }}</td>
+                      <td>{{ appt.doctor?.name || 'TBD' }}</td>
+                      <td>
+                        <span class="badge bg-success">Confirmed</span>
+                      </td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-2">Reschedule</button>
+                        <button class="btn btn-sm btn-outline-danger">Cancel</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Right Column: Care Team -->
-        <div class="col-lg-4">
-          <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+        <!-- Right Column: Quick Action Sidebar -->
+        <div class="col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
             <div class="card-header bg-white p-4 border-0 pb-0">
-              <h5 class="mb-0 fw-bold text-primary">Assigned Care Team</h5>
+              <h5 class="mb-0 fw-bold text-primary">Quick Actions</h5>
             </div>
             <div class="card-body p-4 pt-3">
-              <div *ngIf="medicalRecord.assignedDoctor" class="text-center py-3">
-                <div class="avatar-lg bg-primary-subtle rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
-                  <i class="bi bi-person-heart text-primary" style="font-size: 3rem;"></i>
-                </div>
-                <h5 class="fw-bold mb-1">{{ medicalRecord.assignedDoctor.name }}</h5>
-                <p class="text-muted small text-uppercase fw-bold mb-4">{{ medicalRecord.assignedDoctor.specialty }}</p>
-                
-                <hr class="opacity-10 my-4">
-                
-                <div class="text-start">
-                  <div class="d-flex align-items-center mb-3">
-                    <div class="icon-sm bg-light rounded-circle me-3 d-flex align-items-center justify-content-center">
-                      <i class="bi bi-building text-primary"></i>
-                    </div>
-                    <div>
-                      <label class="small text-muted d-block">Department</label>
-                      <span class="fw-bold">{{ medicalRecord.assignedDepartment }}</span>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center">
-                    <div class="icon-sm bg-light rounded-circle me-3 d-flex align-items-center justify-content-center">
-                      <i class="bi bi-geo-alt text-primary"></i>
-                    </div>
-                    <div>
-                      <label class="small text-muted d-block">Location</label>
-                      <span class="fw-bold">Main Hospital Wing</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div *ngIf="!medicalRecord.assignedDoctor" class="text-center py-5">
-                <i class="bi bi-person-dash text-muted mb-3 d-block" style="font-size: 2.5rem;"></i>
-                <p class="text-muted italic-text">Your primary doctor is currently being assigned. Check back shortly.</p>
+              <div class="d-grid gap-3">
+                <button routerLink="/profile" class="btn btn-outline-primary rounded-pill">
+                  <i class="bi bi-person me-2"></i> View Profile
+                </button>
+                <button class="btn btn-outline-success rounded-pill">
+                  <i class="bi bi-file-medical me-2"></i> Medical Records
+                </button>
+                <button class="btn btn-outline-warning rounded-pill">
+                  <i class="bi bi-telephone me-2"></i> Contact Support
+                </button>
+                <button class="btn btn-outline-danger rounded-pill">
+                  <i class="bi bi-exclamation-triangle me-2"></i> Emergency Help
+                </button>
               </div>
             </div>
             <div class="card-footer bg-light border-0 p-4 text-center">

@@ -3,78 +3,81 @@
 @tailwind utilities;
 
 :root {
-  --cyber-purple: #b366ff;
-  --neon-cyan: #00fafe;
-  --neon-pink: #ff2d95;
-  --dark-bg: #05050a;
-  --dark-card: rgba(10, 10, 25, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-soft: #eff6ff;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.12);
 }
 
 body {
-  background: var(--dark-bg);
-  color: #e2e8f0;
-  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(179, 102, 255, 0.08) 0%, transparent 40%), 
-    radial-gradient(circle at 90% 80%, rgba(0, 250, 254, 0.08) 0%, transparent 40%);
-  perspective: 1200px;
-  overflow-x: hidden;
 }
 
-/* 3D Holographic Floating Card */
+/* Standard card surface (formerly .holo-3d-card) */
 .holo-3d-card {
-  background: var(--dark-card);
-  backdrop-filter: blur(20px) saturate(200%);
-  -webkit-backdrop-filter: blur(20px) saturate(200%);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  box-shadow: var(--glass-shadow);
-  transform-style: preserve-3d;
-  transform: rotateX(8deg) rotateY(-4deg) translateZ(0px);
-  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .holo-3d-card:hover {
-  border-color: rgba(0, 250, 254, 0.4);
-  box-shadow: 0 30px 60px rgba(0, 250, 254, 0.15);
-  transform: rotateX(0deg) rotateY(0deg) translateZ(20px);
+  box-shadow: var(--shadow-md);
+  border-color: #cbd5e1;
 }
 
-.neon-glow-cyan {
-  color: var(--neon-cyan);
-  text-shadow: 0 0 10px rgba(0, 250, 254, 0.6);
-}
-
+/* Plain heading text (formerly .neon-glow-*) */
+.neon-glow-cyan,
 .neon-glow-purple {
-  color: var(--cyber-purple);
-  text-shadow: 0 0 10px rgba(179, 102, 255, 0.6);
+  color: var(--color-text-primary);
+  text-shadow: none;
 }
 
-.status-red-glow { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); }
-.status-yellow-glow { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); }
-.status-green-glow { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
-
+/* Legacy background effects, disabled */
 .scanline-grid {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.15) 2px, rgba(0, 0, 0, 0.15) 4px);
-  opacity: 0.4;
+  display: none;
 }
 
-@keyframes slow-float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(1deg); }
+.floating-environment {
+  animation: none;
 }
-.floating-environment { animation: slow-float 8s ease-in-out infinite; }
 
-.fab-container { 
-  position: fixed; 
-  bottom: 30px; 
-  right: 30px; 
-  display: flex; 
-  flex-direction: column; 
-  gap: 15px; 
-  z-index: 9999; 
+/* Status tints, flattened (no glow) */
+.status-red-glow {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  box-shadow: none;
+}
+.status-yellow-glow {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  box-shadow: none;
+}
+.status-green-glow {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  box-shadow: none;
+}
+
+.fab-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
 }
